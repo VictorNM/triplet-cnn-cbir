@@ -1,2 +1,2 @@
 def load_data():
-    pass
+    print("Hello from src.data.load_data.load_data()")

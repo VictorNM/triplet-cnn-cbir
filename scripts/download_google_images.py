@@ -1,12 +1,13 @@
 import sys
+
 sys.path.append('src')
 
-from data.download_data import download_from_google_images
+from src.data.download_data import download_from_google_images
 
 arguments = {
     "output_directory": "data/raw/google_images",
-    "keywords": "wallet", 
-    "limit": 4, 
+    "keywords": "wallet",
+    "limit": 4,
     "size": "medium"
 }
 
