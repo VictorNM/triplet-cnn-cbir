@@ -1,4 +1,5 @@
 import keras
+from keras.utils import to_categorical
 class DataProcessor:
     @staticmethod
     def normalize(dataset, config):
@@ -23,8 +24,8 @@ class DataProcessor:
        num_classes = len(dataset['classes'])
        
        ## convert class
-       y_train = keras.utils.to_categorical(dataset['y_train'],num_classes)
-       y_test   = keras.utils.to_categorical(dataset['y_test'],num_classes)
+       y_train = to_categorical(dataset['y_train'],num_classes)
+       y_test = to_categorical(dataset['y_test'],num_classes)
        return {
            'classes': dataset['classes'],
            'x_train' : x_train,

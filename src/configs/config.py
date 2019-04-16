@@ -34,6 +34,6 @@ class Config:
 
     def _parse_data_config(self, data_config_json):
         data_config = DataConfig()
-        ##
         data_config.dataset_name = data_config_json['dataset_name']
+        data_config.data_augmentation = data_config_json['dataset_augmentation']
         return data_config

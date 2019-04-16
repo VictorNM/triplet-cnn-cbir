@@ -1,5 +1,5 @@
 from keras.applications import vgg16
-
+from keras.models import Sequential
 
 class ModelBuilder(object):
     @staticmethod

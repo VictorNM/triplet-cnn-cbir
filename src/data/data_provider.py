@@ -1,5 +1,6 @@
 from keras.datasets import mnist, cifar10
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class DataProvider:
@@ -49,7 +50,7 @@ class DataProvider:
 
     @staticmethod
     def _load_cifar10():
-        (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+        (x_train, y_train), (x_test, y_test) = cifar10.load_data()   
         return {
             'classes': ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'],
             'x_train': x_train,
@@ -74,3 +75,5 @@ class DataProvider:
         assert len(dataset['y_test'].shape) == 1, error_message + "y_test is not a 1-dimension array"
         assert len(dataset['x_train']) == len(dataset['y_train']), error_message + "x_train, y_train don't have same length"
         assert len(dataset['x_test']) == len(dataset['x_test']), error_message + "x_test, y_test don't have same length"
+test = DataProvider()
+test._load_cifar10()
