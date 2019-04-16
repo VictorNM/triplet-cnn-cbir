@@ -1,14 +1,10 @@
 {
   "data_config": {
-    "dataset_name" : "cifar-10",
-    "dataset_augmentation" : {
-      "rotation_range" : 20,
-      "zoom" : 20
-
-    }
-
+    "dataset_name": "cifar-10",
+    "dataset_type": "raw"
   },
   "model_config": {
+    "name": "custom",
     "optimizer": "Adam",
     "batch_size": 32,
     "epochs": 10,

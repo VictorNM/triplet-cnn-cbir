@@ -1,5 +1,6 @@
 class ModelConfig:
     def __init__(self):
+        self.name = None
         self.optimizer = None
         self.batch_size = None
         self.epochs = None

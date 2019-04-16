@@ -16,24 +16,26 @@ class Config:
 
         with open(abs_config_file_path) as config_file:
             config_json = json.load(config_file)
-            data_config, model_config = self._parse(config_json)
-            self.data_config = data_config
-            self.model_config = model_config
+            self.data_config, self.model_config = Config._parse(config_json)
 
-    def _parse(self, config_json):
-        model_config = self._parse_model_config(config_json['model_config'])
-        data_config = self._parse_data_config(config_json['data_config'])
+    @staticmethod
+    def _parse(config_json):
+        model_config = Config._parse_model_config(config_json['model_config'])
+        data_config = Config._parse_data_config(config_json['data_config'])
         return data_config, model_config
 
-    def _parse_model_config(self, model_config_json):
+    @staticmethod
+    def _parse_model_config(model_config_json):
         model_config = ModelConfig()
+        model_config.name = model_config_json['name']
         model_config.batch_size = model_config_json['batch_size']
         model_config.epochs = model_config_json['epochs']
         model_config.validation_split = model_config_json['validation_split']
         return model_config
 
-    def _parse_data_config(self, data_config_json):
+    @staticmethod
+    def _parse_data_config(data_config_json):
         data_config = DataConfig()
         data_config.dataset_name = data_config_json['dataset_name']
-        data_config.data_augmentation = data_config_json['dataset_augmentation']
+        data_config.dataset_type = data_config_json['dataset_type']
         return data_config
