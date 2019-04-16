@@ -32,7 +32,7 @@ class DataProvider:
         if dataset_name == DataProvider.CIFAR10:
             dataset = DataProvider._load_cifar10()
 
-        DataProvider._validate_return_value(dataset)
+        # DataProvider._validate_return_value(dataset)
 
         return dataset
 
@@ -53,9 +53,9 @@ class DataProvider:
         return {
             'classes': ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'],
             'x_train': x_train,
-            'y_train': y_train,
+            'y_train': np.reshape(y_train,y_train.shape[0]),
             'x_test': x_test,
-            'y_test': y_test
+            'y_test': np.reshape(y_test,y_test.shape[0])
         }
 
     @staticmethod

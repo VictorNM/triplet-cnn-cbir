@@ -10,3 +10,8 @@ class TestConfigs(unittest.TestCase):
     def test_configs(self):
         configs = Configs()
         print(configs.configs['config'].model_config.batch_size)
+        print(configs.configs['config'].data_config.dataset_name)
+
+# test = TestConfigs()
+# test.test_configs()
+
