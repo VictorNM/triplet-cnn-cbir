@@ -1,6 +1,6 @@
 import unittest
 from .data_provider import DataProvider
-from ..configs.data_config import DataConfig
+from .configs.data_config import DataConfig
 import os
 
 
