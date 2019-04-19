@@ -1,5 +1,6 @@
 import keras
 from keras.utils import to_categorical
+from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img 
 class DataProcessor:
     @staticmethod
     def normalize(dataset, config):
@@ -12,7 +13,7 @@ class DataProcessor:
         return dataset
 
     @staticmethod
-    def scale(dataset):
+    def rescale(dataset):
        ##
        x_train = dataset['x_train'].astype('float32')
        x_test  = dataset['x_test'].astype('float32')
@@ -34,3 +35,4 @@ class DataProcessor:
            'y_test' : y_test
        }
         
+img = load_img('cat.jpg')

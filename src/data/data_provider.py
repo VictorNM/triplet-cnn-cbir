@@ -8,7 +8,7 @@ class DataProvider:
 
     MNIST = 'mnist'
     CIFAR10 = 'cifar-10'
-
+    
     def __init__(self, data_root, data_config):
         self.data_root = data_root
         self.data_config = data_config
@@ -72,7 +72,6 @@ class DataProvider:
         }
         DataProvider._save_pickle(data, pickle_file_path)
         return data
-
     @staticmethod
     def _save_pickle(data, pickle_file_path):
         try:
