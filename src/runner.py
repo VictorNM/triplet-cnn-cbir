@@ -17,10 +17,9 @@ class Runner:
         self.config = Runner._load_config(config_file_name, self.env['configs_dir'])
         self.data_raw = None
         self.data_processed = None
-        self.model_cnn = None
+        self.model = None
 
-        self.isPrepared = False
-        self.isTrainedCNN = False
+        self._isPrepared = False
 
     def prepare(self):
         # load data
@@ -29,31 +28,34 @@ class Runner:
         # pre-process data
         self.data_processed = self.data_raw
 
-        # build CNN
-        self._load_cnn()
+        # load model
+        self._load_model()
 
-        self.isPrepared = True
-
-    def prepare_cnn(self):
-        pass
-
-    def prepare_triplet(self):
-        pass
+        self._isPrepared = True
 
     def analyze(self):
         pass
 
     def train_cnn(self):
-        assert self.isPrepared
+        assert self._isPrepared
 
         x_train, y_train = self.data_processed['x_train'], self.data_processed['y_train']
         classes = self.data_processed['classes']
 
-        self.model_cnn.fit(x_train, to_categorical(y_train, len(classes)))
-        self.isTrainedCNN = True
+        self.model.fit_cnn_classifier(x_train, y_train, len(classes))
 
-    def evaluate(self):
-        pass
+    def evaluate_cnn(self, mode='classify'):
+        if mode == 'classify':
+            x_test, y_test = self.data_processed['x_test'], self.data_processed['y_test']
+            classes = self.data_processed['classes']
+            self.model.evaluate_cnn_classifier(x_test, y_test, len(classes))
+        elif mode == 'similarity':
+            x_train, y_train = self.data_processed['x_train'], self.data_processed['y_train']
+            x_test, y_test = self.data_processed['x_test'], self.data_processed['y_test']
+            self.model.evaluate_cnn_extractor(x_train, y_train, x_test, y_test)
+
+    def make_extractors(self):
+        self.model.make_extractors()
 
     def save(self):
         pass
@@ -67,10 +69,10 @@ class Runner:
         data_provider = DataProvider(data_root, self.config.data_config)
         self.data_raw = data_provider.load()
 
-    def _load_cnn(self):
+    def _load_model(self):
         input_shape = self.data_processed['x_train'].shape[1:]
         num_classes = len(self.data_processed['classes'])
-        self.model_cnn = ModelBuilder.load(self.config.model_config, input_shape, num_classes)
+        self.model = ModelBuilder.load(self.config.model_config, input_shape, num_classes)
 
     @staticmethod
     def _load_config(config_file_name, configs_dir):
