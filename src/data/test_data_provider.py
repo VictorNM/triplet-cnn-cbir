@@ -25,5 +25,3 @@ class TestDataProvider(unittest.TestCase):
         data_provider = DataProvider(data_root, data_config)
         mnist = data_provider.load()
         print(mnist['classes'])
-test = TestDataProvider()
-test.test_load_cifar_10()

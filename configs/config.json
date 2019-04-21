@@ -3,17 +3,9 @@
     "dataset_name": "cifar-10",
     "dataset_type": "raw",
     "data_augmentation" : {
-      "zca_epsilon" : "",
-      "rotation_range" : "",
-      "width_shift_range": "",
-      "height_shift_range": "",
-      "brightness_range": "",
-      "shear_range" : "",
-      "zoon_range" : "",
-      "channel_shit_range": "",
-      "vertical_flip": "",
-      "horizontal_flip": "",
-      "rescale" : ""
+      "rotation_range" : "20",
+      "rescale" : "1/.255",
+      "horizontal_flip": "True"
     }
   },
   "model_config": {

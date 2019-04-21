@@ -38,4 +38,5 @@ class Config:
         data_config = DataConfig()
         data_config.dataset_name = data_config_json['dataset_name']
         data_config.dataset_type = data_config_json['dataset_type']
+        data_config.data_augmentation = data_config_json['data_augmentation']
         return data_config
