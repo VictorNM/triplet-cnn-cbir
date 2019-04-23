@@ -37,5 +37,5 @@ class Config:
     def _parse_data_config(data_config_json):
         data_config = DataConfig()
         data_config.dataset_name = data_config_json['dataset_name']
-        data_config.dataset_type = data_config_json['dataset_type']
+        data_config.input_shape = data_config_json['input_shape']
         return data_config

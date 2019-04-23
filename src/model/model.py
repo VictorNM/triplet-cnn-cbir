@@ -1,11 +1,12 @@
 import keras
 import numpy as np
 from sklearn.cluster import KMeans
-from scipy.stats import mode
 
 
 class Model:
     def __init__(self):
+        self.cnn = None
+        self.triplet = None
         self.cnn_classifier = None
         self.final_extractor = None
         self.cnn_extractor = None

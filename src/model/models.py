@@ -6,14 +6,40 @@ from keras.layers import Dense, Flatten, Dropout, Activation
 from .model import Model
 
 
-class ModelBuilder(object):
+class Models(object):
+
+    EXTRACT_LAYER_NAME = 'extract_layer'
+
     @staticmethod
-    def load(model_config, input_shape, num_classes):
+    def make_cnn_classifier(model_config, input_shape, num_classes):
         model_name = model_config.name
         if model_name == 'custom':
-            return ModelBuilder._custom_model(input_shape, num_classes)
+            return Models._custom_model(input_shape, num_classes)
 
-        raise ValueError("config invalid")
+        raise ValueError("Invalid configuration")
+
+    @staticmethod
+    def make_cnn_extractor(cnn_classifier):
+        cnn_extractor = keras.models.Model(
+            inputs=cnn_classifier.input,
+            outputs=cnn_classifier.get_layer(Models.EXTRACT_LAYER_NAME).output)
+
+        return cnn_extractor
+
+    @staticmethod
+    def make_deep_ranking_extractor(cnn_extractor):
+        # freeze CNN's layers
+        for layer in cnn_extractor.layers:
+            layer.trainable = False
+
+        x = cnn_extractor.output
+        feature_layer = keras.layers.Dense(32)(x)
+        deep_ranking_extractor = keras.models.Model(
+            inputs=cnn_extractor.input,
+            outputs=feature_layer
+        )
+
+        return deep_ranking_extractor
 
     @staticmethod
     def _custom_model(input_shape, num_classes):
@@ -33,7 +59,7 @@ class ModelBuilder(object):
         cnn.add(Dropout(0.25))
 
         cnn.add(Flatten())
-        cnn.add(Dense(512))
+        cnn.add(Dense(512, name=Models.EXTRACT_LAYER_NAME))
         cnn.add(Activation('relu'))
         cnn.add(Dropout(0.5))
         cnn.add(Dense(num_classes))
@@ -45,8 +71,4 @@ class ModelBuilder(object):
         # Let's train the cnn using RMSprop
         cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
-        model = Model()
-        model.cnn_classifier = cnn
-        model.cnn_feature_layer_name = 'dropout_3'
-
-        return model
+        return cnn
