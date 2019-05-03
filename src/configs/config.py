@@ -1,7 +1,7 @@
 import os
 import json
-from .model_config import ModelConfig
-from .data_config import DataConfig
+from model_config import ModelConfig
+from data_config import DataConfig
 
 
 class Config:
