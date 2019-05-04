@@ -1,18 +1,18 @@
 {
   "data_config": {
     "dataset_name": "cifar-10",
-    "dataset_type": "raw",
     "data_augmentation" : {
       "rotation_range" : "20",
       "rescale" : "1/.255",
       "horizontal_flip": "True"
     }
+    "input_shape": [32, 32, 3]
   },
   "model_config": {
     "name": "custom",
     "optimizer": "Adam",
     "batch_size": 32,
-    "epochs": 10,
+    "epochs": 5,
     "validation_split": 0.3
   }
 }
