@@ -95,23 +95,8 @@ class DataProvider:
         train_generator = train_datagen.flow_from_directory(train_data_path, class_mode='sparse')
         test_generator = test_datagen.flow_from_directory(test_data_path, class_mode='sparse')
 
-        x_train = np.ndarray(shape=((train_generator.n, ) + train_generator.image_shape), dtype=np.uint8)
-        y_train = np.ndarray(shape=train_generator.n, dtype=np.uint8)
-        for i in range(train_generator.__len__()):
-            x, y = train_generator.next()
-            start_index = i * train_generator.batch_size
-            end_index = (i+1) * train_generator.batch_size
-            x_train[start_index:end_index] = x
-            y_train[start_index:end_index] = y
-
-        x_test = np.ndarray(shape=((test_generator.n,) + test_generator.image_shape), dtype=np.uint8)
-        y_test = np.ndarray(shape=test_generator.n, dtype=np.uint8)
-        for i in range(test_generator.__len__()):
-            x, y = test_generator.next()
-            start_index = i * test_generator.batch_size
-            end_index = (i + 1) * test_generator.batch_size
-            x_test[start_index:end_index] = x
-            y_test[start_index:end_index] = y
+        x_train, y_train = self._convert_generator_to_data(train_generator)
+        x_test, y_test = self._convert_generator_to_data(test_generator)
 
         classes = [[] for i in range(train_generator.num_classes)]
         for (name, index) in train_generator.class_indices.items():
@@ -136,3 +121,15 @@ class DataProvider:
         except Exception as e:
             print('Unable to save data to', pickle_file_path, ':', e)
             raise
+
+    def _convert_generator_to_data(self, generator):
+        x = np.ndarray(shape=((generator.n,) + generator.image_shape), dtype=np.uint8)
+        y = np.ndarray(shape=generator.n, dtype=np.uint8)
+        for i in range(generator.__len__()):
+            x_batch, y_batch = generator.next()
+            start_index = i * generator.batch_size
+            end_index = (i + 1) * generator.batch_size
+            x[start_index:end_index] = x_batch
+            y[start_index:end_index] = y_batch
+
+        return x, y

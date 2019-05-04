@@ -9,3 +9,6 @@ class TestDataProvider(unittest.TestCase):
         dataset = data_provider.load('vehicles', 'raw')
         print(dataset['classes'])
         print(dataset['x_test'].shape)
+        print(dataset['y_train'][0])
+        plt.imshow(dataset['x_train'][0])
+        plt.show()

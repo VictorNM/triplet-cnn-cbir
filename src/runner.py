@@ -1,6 +1,7 @@
 import os
 from keras.utils import to_categorical
 from .configs import config
+from .data.data_processor import DataProcessor
 from .data.data_provider import DataProvider
 from .model.models import Models
 from . import training, experiment
@@ -15,6 +16,7 @@ class Runner:
             self._data_root = os.path.abspath(os.path.join(os.path.dirname(__file__), data_root))
         self._config = Runner._load_config(config_file_name, configs_dir)
         self._data_provider = None
+        self._data_processor = None
 
         # Data
         self._data_raw = None
@@ -40,7 +42,21 @@ class Runner:
         print("\nPROCESSING DATA...")
         # TODO: use DataProcessor to implement this
         assert self._data_raw is not None
-        self._data_processed = self._data_raw
+        self._data_processor = DataProcessor(self._config.data_config)
+        x_train = self._data_processor.normalize(self._data_raw['x_train'])
+        x_test = self._data_processor.normalize(self._data_raw['x_test'])
+        y_train = self._data_raw['y_train']
+        y_test = self._data_raw['y_test']
+        x_train, y_train = self._data_processor.augment(x_train, y_train)
+        x_test, y_test = self._data_processor.augment(x_test, y_test)
+
+        self._data_processed = {
+            'classes': self._data_raw['classes'],
+            'x_train': x_train,
+            'y_train': y_train,
+            'x_test': x_test,
+            'y_test': y_test
+        }
 
     def construct_cnn_classifier(self):
         model_config = self._config.model_config

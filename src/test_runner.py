@@ -5,7 +5,7 @@ from .runner import Runner
 class TestRunner(unittest.TestCase):
     def test_runner(self):
         runner = Runner()
-        runner.load_data(train_samples=100, test_samples=20)
+        runner.load_data()
         runner.preprocess_data()
         runner.construct_cnn_classifier()
         runner.train_cnn_classifier()

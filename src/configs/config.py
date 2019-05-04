@@ -38,5 +38,5 @@ class Config:
         data_config = DataConfig()
         data_config.dataset_name = data_config_json['dataset_name']
         data_config.data_augmentation = data_config_json['data_augmentation']
-        data_config.input_shape = data_config_json['input_shape']
+        data_config.input_shape = tuple(data_config_json['input_shape'])
         return data_config
