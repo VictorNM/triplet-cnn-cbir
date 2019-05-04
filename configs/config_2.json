@@ -1,0 +1,17 @@
+{
+  "data_config": {
+    "dataset_name": "vehicles",
+    "data_augmentation" : {
+      "rotation_range" : 20,
+      "horizontal_flip": true
+    },
+    "input_shape": [128, 128, 3]
+  },
+  "model_config": {
+    "name": "custom",
+    "optimizer": "Adam",
+    "batch_size": 32,
+    "epochs": 15,
+    "validation_split": 0.3
+  }
+}
