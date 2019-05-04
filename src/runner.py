@@ -87,6 +87,7 @@ class Runner:
         self._model_cnn_extractor = Models.make_cnn_extractor(self._model_cnn_classifier)
 
     def evaluate_cnn_extractor(self):
+        print("\nEVALUATING CNN EXTRACTOR...")
         assert self._model_cnn_extractor is not None, "call construct_cnn_extractor() first"
 
         x_train, y_train = self._data_processed['x_train'], self._data_processed['y_train']
