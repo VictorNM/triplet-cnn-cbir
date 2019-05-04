@@ -1,16 +1,25 @@
 import unittest
 from .runner import Runner
+from .configs.config import Config
 
 
 class TestRunner(unittest.TestCase):
     def test_runner(self):
-        runner = Runner()
+        config = Config.from_file()
+        runner = Runner(config=config)
+
+        # Prepare data
         runner.load_data(train_samples=5, test_samples=1)
         runner.preprocess_data()
-        runner.construct_cnn_classifier()
+
+        # CNN classifier
+        runner.build_cnn_classifier()
+        runner.summary_cnn_classifier()
         runner.train_cnn_classifier()
         runner.evaluate_cnn_classifier()
-        runner.construct_cnn_extractor()
+
+        # CNN extractor
+        runner.build_cnn_extractor()
         runner.evaluate_cnn_extractor()
 
         # load data

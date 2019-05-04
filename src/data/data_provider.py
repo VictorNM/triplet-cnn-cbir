@@ -78,9 +78,9 @@ class DataProvider:
         data = {
             'classes': ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'],
             'x_train': x_train,
-            'y_train': y_train,
+            'y_train': y_train.squeeze(),
             'x_test': x_test,
-            'y_test': y_test
+            'y_test': y_test.squeeze()
         }
         return data
 

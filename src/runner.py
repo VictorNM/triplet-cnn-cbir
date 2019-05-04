@@ -1,22 +1,23 @@
 import os
 from keras.utils import to_categorical
-from .configs import config
+from .configs.config import Config
 from .data.data_processor import DataProcessor
 from .data.data_provider import DataProvider
-from .model.models import Models
+from .model.model_provider import ModelProvider
 from . import training, experiment
 
 
 class Runner:
-    def __init__(self, data_root='../data', configs_dir='../configs', config_file_name='config.json'):
+    def __init__(self, data_root='../data', config=Config.from_file()):
         # Environment & Configurations
         if os.path.isabs(data_root):
             self._data_root = data_root
         else:
             self._data_root = os.path.abspath(os.path.join(os.path.dirname(__file__), data_root))
-        self._config = Runner._load_config(config_file_name, configs_dir)
+        self._config = config
         self._data_provider = None
         self._data_processor = None
+        self._model_provider = None
 
         # Data
         self._data_raw = None
@@ -30,17 +31,17 @@ class Runner:
         # Database
         self._database = None
 
-    def load_data(self, train_samples=0, test_samples=0):
+    def load_data(self, dataset_name=None, train_samples=0, test_samples=0):
         print("\nLOADING DATA...")
         data_root = self._data_root
-        dataset_name = self._config.data_config.dataset_name
+        if dataset_name is None:
+            dataset_name = self._config.data_config.dataset_name
         dataset_type = 'raw'
         self._data_provider = DataProvider(data_root)
         self._data_raw = self._data_provider.load(dataset_name, dataset_type, train_samples, test_samples)
 
     def preprocess_data(self):
         print("\nPROCESSING DATA...")
-        # TODO: use DataProcessor to implement this
         assert self._data_raw is not None
         self._data_processor = DataProcessor(self._config.data_config)
         x_train = self._data_processor.normalize(self._data_raw['x_train'])
@@ -58,11 +59,12 @@ class Runner:
             'y_test': y_test
         }
 
-    def construct_cnn_classifier(self):
+    def build_cnn_classifier(self):
         model_config = self._config.model_config
         input_shape = self._config.data_config.input_shape
         num_classes = len(self._data_processed['classes'])
-        self._model_cnn_classifier = Models.make_cnn_classifier(model_config, input_shape, num_classes)
+        self._model_provider = ModelProvider(model_config)
+        self._model_cnn_classifier = self._model_provider.build_cnn_classifier(input_shape, num_classes)
 
     def train_cnn_classifier(self):
         print("\nTRAINING CNN...")
@@ -98,13 +100,13 @@ class Runner:
 
         print("score:", score)
 
-    def construct_cnn_extractor(self):
+    def build_cnn_extractor(self):
         assert self._model_cnn_classifier is not None
-        self._model_cnn_extractor = Models.make_cnn_extractor(self._model_cnn_classifier)
+        self._model_cnn_extractor = self._model_provider.build_cnn_extractor(self._model_cnn_classifier)
 
     def evaluate_cnn_extractor(self):
         print("\nEVALUATING CNN EXTRACTOR...")
-        assert self._model_cnn_extractor is not None, "call construct_cnn_extractor() first"
+        assert self._model_cnn_extractor is not None, "call build_cnn_extractor() first"
 
         x_train, y_train = self._data_processed['x_train'], self._data_processed['y_train']
         x_test, y_test = self._data_processed['x_test'], self._data_processed['y_test']
@@ -120,10 +122,10 @@ class Runner:
 
         print("score:", score)
 
-    def construct_deep_ranking_extractor(self):
-        assert self._model_cnn_extractor is not None, "call construct_cnn_extractor() first"
+    def build_deep_ranking_extractor(self):
+        assert self._model_cnn_extractor is not None, "call build_cnn_extractor() first"
 
-        self._model_deep_ranking_extractor = Models.make_deep_ranking_extractor(self._model_cnn_extractor)
+        self._model_deep_ranking_extractor = self._model_provider.build_deep_ranking_extractor(self._model_cnn_extractor)
 
     def train_deep_ranking_extractor(self):
         pass
@@ -140,14 +142,14 @@ class Runner:
     def show_images(self, images):
         pass
 
-    @staticmethod
-    def _load_config(config_file_name, configs_dir):
-        if not os.path.isabs(configs_dir):
-            configs_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), configs_dir))
+    def summary_cnn_classifier(self):
+        assert self._model_cnn_classifier, "CNN classifier hasn't build yet"
+        self._model_cnn_classifier.summary()
 
-        if not os.path.isabs(configs_dir) or not os.path.isdir(configs_dir):
-            raise ValueError("configs_dir must be an absolute path to a directory")
+    def summary_cnn_extractor(self):
+        assert self._model_cnn_extractor, "CNN extractor hasn't build yet"
+        self._model_cnn_extractor.summary()
 
-        config_file_path = os.path.join(configs_dir, config_file_name)
-        print("Reading config from:", config_file_path)
-        return config.Config(config_file_path)
+    def summary_deep_ranking_extractor(self):
+        assert self._model_deep_ranking_extractor, "Deep ranking extractor hasn't build yet"
+        self._model_deep_ranking_extractor.summary()

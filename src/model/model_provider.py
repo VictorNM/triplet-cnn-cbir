@@ -1,33 +1,31 @@
 import keras
-from keras.applications import vgg16
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Dense, Flatten, Dropout, Activation
-from .model import Model
 
 
-class Models(object):
+class ModelProvider(object):
 
     EXTRACT_LAYER_NAME = 'extract_layer'
 
-    @staticmethod
-    def make_cnn_classifier(model_config, input_shape, num_classes):
-        model_name = model_config.name
+    def __init__(self, model_config):
+        self._config = model_config
+
+    def build_cnn_classifier(self, input_shape, num_classes):
+        model_name = self._config.name
         if model_name == 'custom':
-            return Models._custom_model(input_shape, num_classes)
+            return self._custom_model(input_shape, num_classes)
 
-        raise ValueError("Invalid configuration")
+        raise ValueError("Model not implemented")
 
-    @staticmethod
-    def make_cnn_extractor(cnn_classifier):
+    def build_cnn_extractor(self, cnn_classifier):
         cnn_extractor = keras.models.Model(
             inputs=cnn_classifier.input,
-            outputs=cnn_classifier.get_layer(Models.EXTRACT_LAYER_NAME).output)
+            outputs=cnn_classifier.get_layer(ModelProvider.EXTRACT_LAYER_NAME).output)
 
         return cnn_extractor
 
-    @staticmethod
-    def make_deep_ranking_extractor(cnn_extractor):
+    def build_deep_ranking_extractor(self, cnn_extractor):
         # freeze CNN's layers
         for layer in cnn_extractor.layers:
             layer.trainable = False
@@ -41,8 +39,7 @@ class Models(object):
 
         return deep_ranking_extractor
 
-    @staticmethod
-    def _custom_model(input_shape, num_classes):
+    def _custom_model(self, input_shape, num_classes):
         cnn = Sequential()
         cnn.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
         cnn.add(Activation('relu'))
@@ -59,16 +56,14 @@ class Models(object):
         cnn.add(Dropout(0.25))
 
         cnn.add(Flatten())
-        cnn.add(Dense(512, name=Models.EXTRACT_LAYER_NAME))
+        cnn.add(Dense(512, name=ModelProvider.EXTRACT_LAYER_NAME))
         cnn.add(Activation('relu'))
         cnn.add(Dropout(0.5))
         cnn.add(Dense(num_classes))
         cnn.add(Activation('softmax'))
 
-        # initiate RMSprop optimizer
-        opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
+        opt = keras.optimizers.SGD(lr=self._config.learning_rate)
 
-        # Let's train the cnn using RMSprop
         cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
         return cnn

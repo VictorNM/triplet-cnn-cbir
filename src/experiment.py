@@ -29,7 +29,7 @@ def evaluate_extractor(extractor, x_train, y_train, x_test, y_test, config):
     :return:
     """
     mAP = _mAP(extractor, x_train, y_train, x_test, y_test, k=10)
-    return map
+    return mAP
 
 
 def _mAP(extractor, x_train, y_train, x_test, y_test, k=10):

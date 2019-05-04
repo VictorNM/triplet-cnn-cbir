@@ -5,7 +5,7 @@ import numpy as np
 
 
 class TestDataProcessor(unittest.TestCase):
-    def test_load_vehicles(self):
+    def test_data_processor(self):
         config = DataConfig()
         config.data_augmentation = {
             "rescale": 2.0
