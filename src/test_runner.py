@@ -25,7 +25,7 @@ class TestRunner(unittest.TestCase):
     def test_config_from_dict(self):
         config_dict = {
             "data_config": {
-                "dataset_name": "vehicles",
+                "dataset_name": "standford_online_products",
                 "data_augmentation": {
                     "rotation_range": 20,
                     "horizontal_flip": True

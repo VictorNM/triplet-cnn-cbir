@@ -21,3 +21,12 @@ class TestDataProvider(unittest.TestCase):
         print(dataset['y_train'])
         plt.imshow(dataset['x_train'][0])
         plt.show()
+
+    def test_load_standford_online_products(self):
+        data_provider = DataProvider(data_root='/home/victor/Learning/bku/dissertation/implementation/data')
+        dataset = data_provider.load('standford_online_products', 'raw')
+        print(dataset['classes'])
+        print(dataset['x_test'].shape)
+        print(dataset['y_train'])
+        plt.imshow(dataset['x_train'][0])
+        plt.show()

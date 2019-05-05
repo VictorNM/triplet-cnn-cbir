@@ -9,7 +9,7 @@ class DataProvider:
     def __init__(self, data_root):
         self._data_root = data_root
 
-    def load(self, dataset_name, dataset_type, train_samples=0, test_samples=0):
+    def load(self, dataset_name, dataset_type='raw', train_samples=0, test_samples=0):
         """
         :return: a dictionary include
             - 'classes': name of classes in the dataset
@@ -30,12 +30,12 @@ class DataProvider:
             dataset = self._load_from_pickle_file(dataset_name, dataset_type)
         except FileNotFoundError:
             print('Pickle file not found, try to read from directory')
-            if dataset_name == 'mnist':
-                dataset = self._load_mnist()
-            elif dataset_name == 'cifar-10':
+            if dataset_name == 'cifar-10':
                 dataset = self._load_cifar10()
             elif dataset_name == 'vehicles':
-                dataset = self._load_vehicles()
+                dataset = self._load_vehicles(dataset_type)
+            elif dataset_name == 'standford_online_products':
+                dataset = self._load_standford_online_product(dataset_type)
             else:
                 raise NotImplementedError
 
@@ -62,17 +62,6 @@ class DataProvider:
 
         raise FileNotFoundError
 
-    def _load_mnist(self):
-        (x_train, y_train), (x_test, y_test) = mnist.load_data()
-        data = {
-            'classes': ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-            'x_train': np.expand_dims(x_train, -1),
-            'y_train': y_train,
-            'x_test': np.expand_dims(x_test, -1),
-            'y_test': y_test
-        }
-        return data
-
     def _load_cifar10(self):
         (x_train, y_train), (x_test, y_test) = cifar10.load_data()
         data = {
@@ -84,7 +73,34 @@ class DataProvider:
         }
         return data
 
-    def _load_vehicles(self, datatype='raw'):
+    def _load_standford_online_product(self, datatype):
+        train_datagen = ImageDataGenerator(dtype=np.uint8)
+        test_datagen = ImageDataGenerator(dtype=np.uint8)
+
+        data_path = os.path.join(self._data_root, datatype, 'standford_online_products')
+        train_data_path = os.path.join(data_path, 'train')
+        test_data_path = os.path.join(data_path, 'test')
+
+        train_generator = train_datagen.flow_from_directory(train_data_path, class_mode='sparse')
+        test_generator = test_datagen.flow_from_directory(test_data_path, class_mode='sparse')
+
+        x_train, y_train = self._convert_generator_to_data(train_generator)
+        x_test, y_test = self._convert_generator_to_data(test_generator)
+
+        classes = [[] for i in range(train_generator.num_classes)]
+        for (name, index) in train_generator.class_indices.items():
+            classes[index] = name
+
+        dataset = dict()
+        dataset['classes'] = classes
+        dataset['x_train'] = x_train
+        dataset['y_train'] = y_train
+        dataset['x_test'] = x_test
+        dataset['y_test'] = y_test
+
+        return dataset
+
+    def _load_vehicles(self, datatype):
         train_datagen = ImageDataGenerator(dtype=np.uint8)
         test_datagen = ImageDataGenerator(dtype=np.uint8)
 

@@ -33,7 +33,6 @@ class DataProcessor:
         y = np.ndarray(shape=generator.n, dtype=generator.dtype)
         for i in range(generator.__len__()):
             x_batch, y_batch = generator.next()
-            print(y_batch.shape)
             start_index = i * generator.batch_size
             end_index = (i + 1) * generator.batch_size
             x[start_index:end_index] = x_batch
