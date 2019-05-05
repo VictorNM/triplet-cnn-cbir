@@ -31,6 +31,8 @@ class Config(object):
 
     @staticmethod
     def from_dict(config_dict=None):
+        if config_dict is None:
+            config_dict = {}
         return Config._parse(config_dict)
 
     @staticmethod

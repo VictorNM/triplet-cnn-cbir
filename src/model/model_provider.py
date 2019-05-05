@@ -52,7 +52,13 @@ class ModelProvider(object):
         cnn.add(MaxPooling2D())
 
         cnn.add(Conv2D(256, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(256, (3, 3), activation='relu', padding='same', input_shape=input_shape))
         cnn.add(Conv2D(256, (3, 3), activation='relu'))
+        cnn.add(MaxPooling2D())
+
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(512, (3, 3), activation='relu'))
         cnn.add(MaxPooling2D())
 
         cnn.add(Flatten())

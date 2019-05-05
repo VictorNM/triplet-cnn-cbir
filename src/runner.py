@@ -112,15 +112,9 @@ class Runner:
         print("\nEVALUATING CNN EXTRACTOR...")
         assert self._model_cnn_extractor is not None, "call build_cnn_extractor() first"
 
-        x_train, y_train = self._data_processed['x_train'], self._data_processed['y_train']
-        x_test, y_test = self._data_processed['x_test'], self._data_processed['y_test']
-
         score = experiment.evaluate_extractor(
             extractor=self._model_cnn_extractor,
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
+            dataset=self._data_processed,
             config=self._config.training_config
         )
 

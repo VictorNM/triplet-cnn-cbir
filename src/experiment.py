@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.cluster import KMeans
 
 
 def evaluate_classifier(classifier, x, y, config):
@@ -11,7 +12,7 @@ def evaluate_classifier(classifier, x, y, config):
     return score
 
 
-def evaluate_extractor(extractor, x_train, y_train, x_test, y_test, config):
+def evaluate_extractor(extractor, dataset, config):
     """
     Evaluate using:
     - similarity_precision: percentage of triplets being correctly ranked.
@@ -19,41 +20,57 @@ def evaluate_extractor(extractor, x_train, y_train, x_test, y_test, config):
         t_i is correctly ranked if: distance(a_i, p_i) < distance(a_i, n_i)
     - mean_category_precision_at_top_K: mean of percentage of positive / top N results
     - mAP
-
-    :param extractor:
-    :param x_train:
-    :param y_train:
-    :param x_test:
-    :param y_test:
-    :param config:
-    :return:
     """
-    mAP = _mAP(extractor, x_train, y_train, x_test, y_test, k=10)
-    return mAP
+    x_train, y_train = dataset['x_train'], dataset['y_train']
+    x_test, y_test = dataset['x_test'], dataset['y_test']
+    classes = dataset['classes']
+
+    return _mAP(extractor, x_train, y_train, x_test, y_test, num_classes=len(classes), k=5)
 
 
-def _mAP(extractor, x_train, y_train, x_test, y_test, k=10):
-    train_vectors = extractor.predict(x_train)
-    test_vectors = extractor.predict(x_test)
+def _mAP(extractor, x_train, y_train, x_test, y_test, num_classes, k=10):
+    x_train_vectors = extractor.predict(x_train)
+    x_test_vectors = extractor.predict(x_test)
 
-    return np.average([
-        _ap(
-            query_vector=test_vector,
-            db_vectors=train_vectors,
-            query_label=y_test[i],
-            db_labels=y_train,
-            k=k
-        )
-        for i, test_vector in enumerate(test_vectors)
-    ])
+    kmeans = _create_kmeans(x_train_vectors, n_clusters=num_classes)
+    test_kmeans_labels = kmeans.predict(x_test_vectors)
+
+    APs = []
+    num_tests = len(x_test_vectors)
+    for i in range(num_tests):
+        query_vector = x_test_vectors[i]
+        query_label = y_test[i]
+        query_kmeans_label = test_kmeans_labels[i]
+        result_vectors, result_labels = _do_query(query_vector, query_kmeans_label, x_train_vectors, y_train, kmeans.labels_)
+        distances = [_euclidean_distance(result_vector, query_vector) for result_vector in result_vectors]
+        sorted_idx = np.argsort(distances)
+        sorted_result_labels = result_labels[sorted_idx]
+        AP = np.average([
+            _category_precision_at_top_k(query_label, sorted_result_labels, i)
+            for i in range(1, 5)
+        ])
+        APs.append(AP)
+
+    return np.mean(APs)
 
 
-def _ap(query_vector, db_vectors, query_label, db_labels, k):
-    sorted_db_labels = db_labels[_get_sorted_indexes(query_vector, db_vectors)]
-    return np.average([
-        _category_precision_at_top_k(query_label, sorted_db_labels, i)
-        for i in range(1, k+1)
-    ])
+def _do_query(query_vector, query_label, vectors_database, labels_databse, kmeans_labels):
+    indexes = _where_equal(kmeans_labels, query_label)
+    result_vectors = vectors_database[indexes]
+    result_labels = labels_databse[indexes]
+
+    return result_vectors, result_labels
+
+
+def _create_kmeans(x, n_clusters):
+    kmeans = KMeans(n_clusters)
+    kmeans.fit(x)
+    return kmeans
+
+
+def _where_equal(arr, val):
+    # return index of values in arr that equal to val
+    return np.asanyarray(arr == val).nonzero()
 
 
 def _get_sorted_indexes(query_vector, db_vectors):
