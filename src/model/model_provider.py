@@ -62,8 +62,4 @@ class ModelProvider(object):
         cnn.add(Dense(num_classes))
         cnn.add(Activation('softmax'))
 
-        opt = keras.optimizers.SGD(lr=self._config.learning_rate)
-
-        cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-
         return cnn

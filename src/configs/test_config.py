@@ -8,7 +8,7 @@ class TestConfig(unittest.TestCase):
         print(config)
 
     def test_load_config_from_abs_path_file(self):
-        config = Config.from_file('/home/victor/Learning/bku/dissertation/implementation/configs/config_2.json')
+        config = Config.from_file('/home/victor/Learning/bku/dissertation/implementation/configs/config.json')
         print(config)
         assert config is not None
 

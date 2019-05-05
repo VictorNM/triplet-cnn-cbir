@@ -8,8 +8,12 @@
     "input_shape": [128, 128, 3]
   },
   "model_config": {
-    "name": "custom",
-    "optimizer": "Adam",
+    "model_name": "custom"
+  },
+  "training_config": {
+    "optimizer": {
+      "name": "SGD"
+    },
     "batch_size": 32,
     "epochs": 5,
     "learning_rate": 0.01,

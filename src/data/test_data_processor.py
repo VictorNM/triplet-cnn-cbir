@@ -11,7 +11,7 @@ class TestDataProcessor(unittest.TestCase):
             "rescale": 2.0
         }
         data_processor = DataProcessor(config)
-        x = np.random.randint(0, 255, size=(1, 3, 3, 3))
+        x = np.random.randint(0, 255, size=(1, 100, 100, 3))
         print(x)
         x = data_processor.normalize(x)
         print(x)

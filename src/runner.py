@@ -59,8 +59,12 @@ class Runner:
             'y_test': y_test
         }
 
-    def build_cnn_classifier(self):
+    def build_cnn_classifier(self, model_name=None):
         model_config = self._config.model_config
+        # for easily switch model without change config file
+        if model_name is not None:
+            model_config.model_name = model_name
+
         input_shape = self._config.data_config.input_shape
         num_classes = len(self._data_processed['classes'])
         self._model_provider = ModelProvider(model_config)
@@ -80,7 +84,7 @@ class Runner:
             classifier=self._model_cnn_classifier,
             x=x_train,
             y=y_train,
-            config=self._config.model_config
+            config=self._config.training_config
         )
 
         return train_history
@@ -95,7 +99,7 @@ class Runner:
             classifier=self._model_cnn_classifier,
             x=x_test,
             y=y_test,
-            config=self._config.model_config
+            config=self._config.training_config
         )
 
         print("score:", score)
@@ -117,7 +121,7 @@ class Runner:
             y_train=y_train,
             x_test=x_test,
             y_test=y_test,
-            config=self._config.model_config
+            config=self._config.training_config
         )
 
         print("score:", score)
