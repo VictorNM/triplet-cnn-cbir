@@ -39,27 +39,27 @@ class ModelProvider(object):
 
         return deep_ranking_extractor
 
+    # Pattern; INPUT -> [[CONV -> RELU]*N -> POOL?]*M -> [FC -> RELU]*K -> FC
+    # N <= 3, M >= 0, K <= 3
     def _custom_model(self, input_shape, num_classes):
         cnn = Sequential()
-        cnn.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
-        cnn.add(Activation('relu'))
-        cnn.add(Conv2D(32, (3, 3)))
-        cnn.add(Activation('relu'))
-        cnn.add(MaxPooling2D(pool_size=(2, 2)))
-        cnn.add(Dropout(0.25))
+        cnn.add(Conv2D(64, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(64, (3, 3), activation='relu'))
+        cnn.add(MaxPooling2D())
 
-        cnn.add(Conv2D(64, (3, 3), padding='same'))
-        cnn.add(Activation('relu'))
-        cnn.add(Conv2D(64, (3, 3)))
-        cnn.add(Activation('relu'))
-        cnn.add(MaxPooling2D(pool_size=(2, 2)))
-        cnn.add(Dropout(0.25))
+        cnn.add(Conv2D(128, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(128, (3, 3), activation='relu'))
+        cnn.add(MaxPooling2D())
+
+        cnn.add(Conv2D(256, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(256, (3, 3), activation='relu'))
+        cnn.add(MaxPooling2D())
 
         cnn.add(Flatten())
-        cnn.add(Dense(512, name=ModelProvider.EXTRACT_LAYER_NAME))
-        cnn.add(Activation('relu'))
+        cnn.add(Dense(512, activation='relu'))
         cnn.add(Dropout(0.5))
-        cnn.add(Dense(num_classes))
-        cnn.add(Activation('softmax'))
+        cnn.add(Dense(512, activation='relu', name=ModelProvider.EXTRACT_LAYER_NAME))
+        cnn.add(Dropout(0.5))
+        cnn.add(Dense(num_classes, activation='softmax'))
 
         return cnn

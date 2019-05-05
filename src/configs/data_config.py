@@ -17,7 +17,7 @@ class DataConfig:
     @staticmethod
     def _default_config():
         return {
-            'dataset_name': 'vehicles',
+            'dataset_name': 'standford_online_products',
             'data_augmentation': {},
             'input_shape': [128, 128, 3]
         }
