@@ -1,7 +1,8 @@
 import keras
 from keras.models import Sequential
+from keras.layers import Input
 from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Dense, Flatten, Dropout, Activation
+from keras.layers import Dense, Flatten, Dropout
 
 
 class ModelProvider(object):
@@ -15,6 +16,8 @@ class ModelProvider(object):
         model_name = self._config.name
         if model_name == 'custom':
             return self._custom_model(input_shape, num_classes)
+        if model_name == 'vgg16':
+            return self._vgg16(input_shape, num_classes)
 
         raise ValueError("Model not implemented")
 
@@ -43,6 +46,7 @@ class ModelProvider(object):
     # N <= 3, M >= 0, K <= 3
     def _custom_model(self, input_shape, num_classes):
         cnn = Sequential()
+
         cnn.add(Conv2D(64, (3, 3), activation='relu', padding='same', input_shape=input_shape))
         cnn.add(Conv2D(64, (3, 3), activation='relu'))
         cnn.add(MaxPooling2D())
@@ -62,10 +66,41 @@ class ModelProvider(object):
         cnn.add(MaxPooling2D())
 
         cnn.add(Flatten())
-        cnn.add(Dense(512, activation='relu'))
-        cnn.add(Dropout(0.5))
-        cnn.add(Dense(512, activation='relu', name=ModelProvider.EXTRACT_LAYER_NAME))
-        cnn.add(Dropout(0.5))
+        cnn.add(Dense(2048, activation='relu'))
+        cnn.add(Dense(2048, activation='relu', name=ModelProvider.EXTRACT_LAYER_NAME))
         cnn.add(Dense(num_classes, activation='softmax'))
+
+        return cnn
+
+    def _vgg16(self, input_shape, num_classes):
+        cnn = Sequential()
+
+        cnn.add(Conv2D(64, (3, 3), activation='relu', padding='same', input_shape=input_shape))
+        cnn.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+        cnn.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        cnn.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+        cnn.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        cnn.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+        cnn.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        cnn.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        cnn.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        cnn.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+        cnn.add(Flatten())
+        cnn.add(Dense(4096, activation='relu', name='fc1'))
+        cnn.add(Dense(4096, activation='relu', name=ModelProvider.EXTRACT_LAYER_NAME))
+        cnn.add(Dense(num_classes, activation='softmax', name='predictions'))
 
         return cnn

@@ -33,7 +33,7 @@ class TestRunner(unittest.TestCase):
                 "input_shape": [128, 128, 3]
             },
             "model_config": {
-                "name": "custom"
+                "name": "vgg16"
             },
             "training_config": {
                 "batch_size": 32,
