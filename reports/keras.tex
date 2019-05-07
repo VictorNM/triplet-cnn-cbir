@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{vntex}
+\usepackage{xcolor}
 \begin{document}
     \section{Giới thiệu về Keras}
         Keras là một thư viện 'high level' với phần backend là TensorFlow, CNTK, hoặc Theano
@@ -9,5 +10,13 @@
     để cập nhật trọng số của network thông qua việc training dữ liệu.
     \par
     Adam được đề xuất bởi Diederik Kingma từ OpenAI và Jimmy Ba từ Đại học Toronto và năm
-    2015 trên báo ICLR với tiêu đề "Adam: A Method for Stochastic Optimization"
+    2015 trên báo ICLR với tiêu đề "Adam: A Method for Stochastic Optimization".
+    \par 
+    Adam  hoạt động khác với stochastic gradient descent.
+    \par
+    Stochastic gradient descent duy trì một {\color{blue}learing rate} độc lập cho 
+    việc cập nhật tất cả các trọng số và con số này sẽ không thay đổi trong suất quá trifng 
+    training.
+    \par
+    {\color{blue}Learing rate} được duy trì cho từng trọng số mạng (tham số) và được điều chỉnh riêng trong quá trình học.
 \end{document}
