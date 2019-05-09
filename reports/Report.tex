@@ -110,7 +110,7 @@
 
     \begin{center}
         \begin{tabular}{c}
-        \multicolumn{1}{l}{\textbf{{\Large Đề cương luận văn tốt nghiệp (CO4311)}}}\\
+        \multicolumn{1}{l}{\textbf{{\Large Luận văn tốt nghiệp (CO4313)}}}\\
         ~~\\
         \\
         \hline
@@ -175,10 +175,7 @@ Các phương pháp được thực hiện theo hướng này giúp cho việc l
 có hệ thống, hạn chế sự tham gia của con người trong việc tạo dữ liệu đặc trưng, qua đó tăng độ chính xác cũng như tốc 
 độ khởi tạo dữ liệu trong cơ sở dữ liệu hình ảnh.
 \par
-Trong đề cương luận văn này, nhóm sẽ tìm hiểu một số phương pháp tìm 
-kiếm đối tượng theo đặc trưng đã được nghiên cứu và phát triền, đồng thời đề xuất hướng hiện thực một phương pháp trong 
-đó cho luận văn sắp tới.
-
+Trong Luận văn này, nhóm sẽ tìm hiểu một số phương pháp tìm kiếm đối tượng theo đặc trưng đã được nghiên cứu và phát triền, đồng thời hiện thực một phương pháp mà nhóm đề xuất.
 
 \section{Mục tiêu, nội dung đề tài}
 
@@ -202,16 +199,13 @@ Nội dung chính của đề tài bao gồm các những phần sau đây:
 
 \section{Cấu trúc luận văn}
 Nội dung bài luận văn này được chia thành 5 chương như sau:
-\par
-\textbf{Chương 1:} Giới thiệu về nội dung đề tài, tính cần thiết của đề tài và phạm vi nghiên cứu của nhóm.
-\par
-\textbf{Chương 2:} Trình bày cơ sở lí thuyết về hình ảnh, các phương pháp trích xuất đặc trưng ảnh và các phương pháp đo lường độ tương đồng của hình ảnh dựa trên đặc trưng trích xuất được. Ngoài ra chương này còn trình bày tóm lược về các nguyên cứu liên quan và những kết quả  mà các nghiên cứu này đã đạt được.
-\par
-\textbf{Chương 3:} Yêu cầu của bài toán, các giải thuật mà nhóm đề xuất nghiên cứu và phương pháp để đánh giá kết quả đạt được.
-\par
-\textbf{Chương 4:} Hiện thực chương trình đơn giản một tập dữ liệu nhỏ để minh họa cho các nghiên cứu của nhóm. 
-\par
-\textbf{Chương 5:} Chương này sẽ nêu ra các kết quả đạt được, ưu nhược điểm và định hướng cho luận văn tốt nghiệp của nhóm.
+\begin{itemize}
+    \item \textbf{Chương 1:} Giới thiệu về nội dung đề tài, tính cần thiết của đề tài và phạm vi nghiên cứu của nhóm.
+    \item \textbf{Chương 2:} Trình bày cơ sở lí thuyết về hình ảnh, các phương pháp trích xuất đặc trưng ảnh và các phương pháp đo lường độ tương đồng của hình ảnh dựa trên đặc trưng trích xuất được. Ngoài ra chương này còn trình bày tóm lược về các nguyên cứu liên quan và những kết quả  mà các nghiên cứu này đã đạt được.
+    \item \textbf{Chương 3:} Yêu cầu của bài toán, các giải thuật mà nhóm đề xuất nghiên cứu và phương pháp để đánh giá kết quả đạt được.
+    \item \textbf{Chương 4:} Hiện thực chương trình đơn giản một tập dữ liệu nhỏ để minh họa cho các nghiên cứu của nhóm.
+    \item \textbf{Chương 5:} Chương này sẽ nêu ra các kết quả đạt được, ưu nhược điểm và định hướng cho luận văn tốt nghiệp của nhóm.
+\end{itemize}
 
 % %%%%%%%%%%%%%%%Chapter 2 Cở sở lí thuyết và các nghiên cuuw liên quan%%%%%%%%%%%%%%%%%%%%
 \chapter{Cơ sở lí thuyết và các nghiên cứu liên quan}
@@ -541,39 +535,30 @@ So với các hàm kích hoạt thường dùng khác như sigmoid hay tanh, hà
 cùng với đó là giải quyết vấn đề triệt tiêu đạo hàm khi x > 0.
 
 \subsubsection*{Lớp pooling}
+Dùng để giảm kích thước của ma trận được tạo ra từ lớp nơ-ron phía trước, giúp giảm độ phức tạp tính toán của mạng cũng như hạng chế overfitting.
 
-Thay vì sử dụng phép nhân ma trận giữa các giá trị đầu vào và ma trận trọng số như mạng nơ-ron thông thường, 
-lớp tích chập sử dụng phép tính chập để tính giá trị đầu ra. Các ma trận trọng số, hay còn gọi là filter 
-này sẽ được sử dụng để quét qua từng phần của hình ảnh đầu vào để tạo ra các giá trị trong ma trận đầu ra.  
-Mỗi ô của ma trận đầu ra được tính theo công thức như sau:
+Tương tự như lớp convolutional, lớp pooling cũng sử dụng các filter để di chuyển qua từng vùng của đầu vào và tính giá trị đầu ra. Giá trị đầu ra thường được tính bằng cách lấy giá trị trung bình (average) hoặc giá trị lớn nhất (maximum) của các giá trị đầu vào.
 
-\[ Y(u,v) = X*W = \sum_{i=-r}^{r} \sum_{j=-r}^{r} X(u - i,v - j)W(i,j) \]
-Trong đó: \\
-Y: Ma trận đầu ra \\
-X: Ma trận đầu vào (hình ảnh) \\
-W: Ma trận filter được sử dụng cho phép tích chập
+Kích thước của filter thường dùng là 2x2, bước trượt thường dùng 2.
 
-Ngoài ra, filter có thể được quét qua ảnh theo bước trượt (stride) khác nhau, và ảnh đầu vào cũng có 
-thể được thêm các giá trị đệm ở viền (padding), thường là 0 nhằm điều chỉnh kích thước ma trận. Dựa vào 
-các thông số đầu vào, ta có thể tính kích thước ma trận đầu ra tương ứng như sau:
+Kích thước ma trận đầu ra của lớp Pooling cũng có thể tính như sau:
 
-\[ W_o = (W_i - F + 2P) / S + 1 \]
-\[ H_o = (H_i - F + 2P) / S + 1 \]
-\[ D_o = K \]
+\[ W_o = (W_i - F) / S + 1 \]
+\[ H_o = (H_i - F) / S + 1 \]
+\[ D_o = D_i \]
 
 Trong đó: \\
-$ W_i, H_i $: chiều rộng, chiều cao của ma trận đầu vào \\
+$ W_i, H_i, D_i $: chiều rộng, chiều cao, chiều sâu của ma trận đầu vào \\
 $ W_o, H_o, D_o $: chiều rộng, chiều cao, chiều sâu của ma trận đầu ra \\
 $ F $: kích thước một cạnh của filter \\
 $ S $: bước trượt \\
-$ P $: padding \\
-$ K $: số lượng filter \\
 
-Sau khi được tính bằng phép tích chập, ma trận đầu ra sẽ được đi qua hàm kích hoạt ReLu nhằm tạo 
-tính phi tuyến cho mạng nơ-ron. Công thức của hàm ReLU như sau:
-\[ y = max(x, 0). \]
-So với các hàm kích hoạt thường dùng khác nhưu sigmoid hay tanh, hàm ReLU cho khả năng tính toán nhanh hơn, 
-cùng với đó là giải quyết vấn đề triệt tiêu đạo hàm khi x > 0.
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.7]{img/maxpooling.png}
+    \caption{Max pooling với filter size = 2 x 2, stride = 1}
+\end{figure}
+
 \subsubsection*{Lớp fully-connected}
 Lớp này có nhiệm vụ kết hợp tất cả giá trị ở các nơ-ron ở lớp trước lại, tương tự như mạng nơ-ron thông thường. 
 Ở lớp này, phép nhân ma trận được sử dụng để tạo các giá trị đầu ra. Lớp cuối cùng của một mạng nơ-ron tích 
@@ -593,7 +578,11 @@ Ngày này, trong các bài toán sử dụng mạng nơ-ron tích chập để 
 thường dùng các mô hình đã được huấn luyện trên tập ImageNet để thực hiện học chuyển giao, giúp cho quá 
 trình huấn luyện diễn ra nhanh hơn và cũng hiệu quả hơn.
 
-\subsubsection*{ Triplet Loss }
+\subsection{Các mô hình mạng neural}
+
+\subsubsection*{ Kiến trúc mạng dựa trên Triplet Loss }
+
+\subsubsubsection{\bf Triplet Loss}
 
 Với các mô hình deep learning thông thường, ta cho từng hình ảnh vào mô hình, tuy nhiên với mô hình sử dụng Triplet Loss ta sẽ cho vào mô hình từng bộ ba (triplet).
 
@@ -616,8 +605,8 @@ trong đó: \[max\{0, g + D(f(p_i),f(p_i^{+}) - D(f(p_i),f(p_i^{-})\} \leq \xi_i
 \begin{center}$\forall{p_i,p_i^{+},p_i^{-}}$, $r(p_i,p_i^{+}) > r(p_i,p_i^{-})$ \end{center}
 $\lambda$ là tham số kiểm soát sự xếp hạng để cải thiện tính tổng quát của nó. $\mathbf{W}$ là những tham số của hàm f(.). Trong mô hình sử dụng triplet loss, việc quan trọng nhất là học và xác định tham số của hàm f(.) một cách tốt nhất có thể.
 
-\subsubsection*{ Kiến trúc mạng dựa trên Triplet Loss }
-\\
+\subsubsubsection{\bf Kiến trúc mạng dựa trên Triplet Loss}
+
 \begin{figure}  
     \centering
     \includegraphics[scale=0.8]{img/triplet.png}
@@ -625,10 +614,44 @@ $\lambda$ là tham số kiểm soát sự xếp hạng để cải thiện tính
     \cite{paper-5}
     \label{fig:triplet}
 \end{figure}
-\\
+
 Kiến trúc mạng dựa trên Triplet Loss ở hình \ref{fig:triplet} \cite{paper-5} được đề xuất cho hàm mất mát dùng để ranking. Mạng này lấy input là những triplet. Một triplet bao gồm $p_i$ là ảnh query, $p_i^{+}$ là ảnh positve (ảnh tương đồng với ảnh query), $p_i^{-}$ là ảnh negative (ảnh khác hoàn toàn với ảnh query). Một triplet đặc trưng cho mối quan hệ tương đồng giữa 3 hình ảnh đó. Chúng được vào 3 mạng neural giống nhau về kiến trúc và tham số f(.). Mạng neural f(.) tính toán ra vector đặc trưng của hình ảnh $p_i: f(p_i) \in \mathcal{R}^d$, với d là số chiều của vector đặc trưng của hình ảnh.
 \\
 Lớp ranking trên cùng của mạng tính toán Loss của một triplet. Lớp ranking không có tham số nào. Trong suốt quá trình học, lớp ranking dùng giải thuật lan truyền ngược các gradient đến các lớp trước để các lớp trước có thể điều chỉnh tham số của chúng để giảm chi phí (loss).
+
+\subsubsection*{ Kiến trúc mạng VGG }
+
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.8]{img/vgg.png}
+    \caption{Kiến trúc VGG}
+    \cite{img-vgg}
+    \label{fig:vgg}
+\end{figure}
+
+Kiến trúc mạng VGG được giới thiệu bởi Simonyan và Zisserman vào năm 2014 trong bài báo "Very Deep Convolutional Networks for Large Scale Image Recognition". Đặc trưng của cấu trúc mạng này là sự đơn giản của nó, chỉ sử dụng những lớp tích chập 3x3 chồng lên nhau khi chiều sâu mạng tăng dần. Việc giảm kích thước được xử lý bởi hàm max pooling. Hai lớp fully-connected, mỗi lớp có 4096 node, theo sau hai lớp fully-connected là lớp kích hoạt softmax.
+
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.8]{img/configure.png}
+    \caption{Cấu trúc mạng VGG}
+    \cite{paper-6}
+    \label{fig:vgg-configure}
+\end{figure}
+
+Trong mạng VGG16 và VGG19, số 16 và 19 dựa trên số lớp trọng số trong mạng (cột D và E trong hình \ref{fig:vgg-configure} \cite{paper-6}).
+
+Simonyan và Zisserman nhận thấy việc training VGG16 và VGG19 là đầy thách thức (cụ thể là về sự hội tụ trên các mạng sâu hơn), vì vậy để làm cho việc training dễ dàng hơn, trước tiên họ đã train các phiên bản VGG nhỏ hơn với các lớp trọng số ít hơn (cột A và C).
+
+Các mạng nhỏ hơn hội tụ và sau đó được sử dụng làm khởi tạo cho các mạng lớn hơn, sâu hơn - quá trình này được gọi là việc train trước.
+Mặc dù có ý nghĩa logic, việc train trước là một công việc rất tốn thời gian, tẻ nhạt, đòi hỏi toàn bộ mạng phải được train trước khi nó có thể đóng vai trò khởi tạo cho một mạng sâu hơn.
+
+VGG có hai nhược điểm:
+
+\begin{itemize}
+        \item Việc train chậm.
+        \item Các trọng số của kiến trúc mạng này khá lớn (về mặt đĩa / băng thông).
+\end{itemize}
 
 \section{Các nghiên cứu liên quan}
 \subsection{Bài báo: "Deep learning for content-based image retrieval: A comprehensive study." \cite{paper-1}}
@@ -637,7 +660,7 @@ Bài báo nghiên cứu về việc áp dụng Deep Learning cho CBIR, thông qu
 
 \begin{itemize}
         \item Giai đoạn 1: đào tạo một mô hình Deep Learning từ một tập lớn dữ liệu đào tạo.
-        \item Ap dụng mô hình sâu đã được training cho việc học biểu diễn đặc trưng của CBIR trong một miền mới.
+        \item Áp dụng mô hình sâu đã được training cho việc học biểu diễn đặc trưng của CBIR trong một miền mới.
 \end{itemize}
 
 Và kết quả thu được rất khả quan:
@@ -693,39 +716,25 @@ với hình ảnh đầu vào.
 
 \section{ Phương pháp đề xuất }
 
-\subsection{Sử dụng đặc trưng được trích xuất từ mạng nơ-ron tích chập đã được huấn luyện}
-Trong phần này, nhóm sẽ đánh giá kết quả thu được từ việc trích xuất dựa trên một mạng nơ-ron tích 
-chập đã được huấn luyện để phân loại 1000 loại hình ảnh cho tập ImageNet. Đây là phương pháp đơn 
-giản nhất khi sử dụng mạng nơ-ron tích chập để làm bộ trích xuất đặc trưng, và cũng được đã nhiều bài báo sử dụng.
+Trong phần này, nhóm sẽ đánh giá kết quả thu được từ việc trích xuất dựa trên một mô hình mà nhóm đề xuất. Nhiều bài báo sử dụng mạng nơ-ron tích chập để làm bộ trích xuất đặc trưng và sử dụng những đặc trưng đó để ứng dụng vào các bài toán khác nhau. trong luận văn này nhóm sử dụng mô hình của nhóm để làm bộ trích xuất đặc trưng. Mô hình của nhóm là sự kết hợp giữa một mạng CNN và một mạng triplet loss.
 
 Phương pháp này dựa trên ý tưởng mạng nơ-ron sau khi được huấn luyện để có thể phân loại ảnh thì cũng sẽ cho 
-ra các đặc trưng tương tự với các bức ảnh tương tự nhau.
+ra các đặc trưng tương tự với các bức ảnh tương tự nhau. Dựa vào ý tưởng này, các bức ảnh sau khi đi qua mô hình nhóm đề xuất cũng sẽ cho ra các đặc trưng tương tự với các bức ảnh tương tự nhau.
 
-Input của giải thuật này là ảnh một vật thể đã được điều chỉnh kích thước phù hợp với kích thước đầu vào của mạng nơ-ron tích chập được huấn luyện.
+Input của phương pháp này là ảnh một vật thể đã được điều chỉnh kích thước phù hợp với kích thước đầu vào của mạng nơ-ron tích chập được huấn luyện. Output của phương pháp là tập các ảnh trong cơ sở dữ liệu có độ tương đồng cao nhất với ảnh đầu vào.
 
-Output của giải thuật là tập các ảnh trong cơ sở dữ liệu có độ tương đồng cao nhất với ảnh đầu vào.
-
-Sơ đồ xử lý của giải thuật được mô tả như hình 3.1, trong đó, ảnh đầu vào sẽ trải qua bước tiền xử lý đề thu về ảnh có kích thước phù hợp với đầu vào của mạng nơ-ron tích chập. Ảnh sau đó sẽ được truyền qua mạng nơ-ron để thu về vector đặc trưng, cũng chính là giá trị tại lớp fully-connected gần cuối cùng của mạng. Vector đặc trưng này sẽ được so sánh với các vector đặc trưng của ảnh trong cơ sơ dữ liệu. Dựa vào kết quả so sánh được, tập ảnh có độ tương đồng cao nhất với ảnh đầu vào sẽ được trích xuất ra.
+Sơ đồ xử lý của giải thuật được mô tả như hình 3.1, trong đó, ảnh đầu vào sẽ trải qua bước tiền xử lý đề thu về ảnh có kích thước phù hợp với đầu vào của mô hình Triplet loss - CNN. Ảnh sau đó sẽ được truyền qua mô hình để thu về vector đặc trưng. Các hình ảnh trong database cũng qua mô hình để tạo ra những vector đặc trưng tương ứng. Những vector đặc trưng đó được tiến hành gom cụm để tạo ra các cluster dựa trên giải thuật K-mean. Sau đó, vector đặc trưng của hình ảnh truy vấn sẽ xác định được nằm ở cluster nào, lấy những vector đặc trưng nằm trong những cluster đó ra và tiến hành sắp xếp theo mức độ tương đồng từ cao tới thấp. Những vector tương đồng nhất tương ứng với những hình ảnh tương đồng với ảnh truy vấn nhất và những hình ảnh tương đồng đó sẽ được trích xuất từ database dựa theo index.
 
 \begin{figure}  
     \centering
-    \includegraphics[scale=0.5]{img/cnn-feature-extractor.jpg}
+    \includegraphics[scale=0.4]{img/CBIR-system.png}
     \caption{Sơ đồ xử lý của giải thuật sử dụng mạng nơ-ron tích chập.}
 \end{figure}    
 
 Ưu điểm của phương pháp này là cho kết quả nhanh chóng, đồng thời có thể áp dụng trực tiếp lên một tập 
-dữ liệu mới mà không cần phải huấn luyện lại. Tuy nhiên có thể dễ thấy rằng việc áp dụng một mạng nơ-ron 
+dữ liệu mới mà không cần phải huấn luyện lại. Tuy nhiên có thể dễ thấy rằng việc áp dụng một mô hình 
 được huấn luyện sẵn vào một tập dữ liệu khác với tập dữ liệu huấn luyện có thể sẽ mang đến kết quả không thực sự tốt.
 
-
-
-\subsection{Sử dụng đặc trưng được trích xuất từ mạng nơ-ron tích chập sau khi thực hiện học chuyển giao }
-
-Với phương pháp này, nhóm kỳ vọng rằng việc thực hiện học chuyển giao cho một mô hình mạng nơ-ron 
-được huấn luyện sẵn trên tập dữ liệu mới sẽ giúp mô hình đưa ra những đặc trưng gần hơn với dữ liệu, 
-thông qua đó cải thiện độ chính xác của mô hình.
-
-Phương pháp này tương tự như phương pháp đề xuất ở mục 3.2.1, điểm khác biệt chính là trước khi sử dụng mạng nơ-ron tích chập làm bộ trích xuất đặc trưng, nhóm sẽ thực hiện học chuyển giao trên tập dữ liệu mới. Sau đó, các đặc trưng ảnh sẽ được trích xuất tương tự như quy trình đã nêu ở mục 3.1.1.
 
 \section{ Các phương pháp đánh giá }
 Nhóm sẽ thực hiện đánh giá bằng cách đo lường độ chính xác của các hình ảnh được tìm thấy dựa theo nhãn 
@@ -736,14 +745,13 @@ của hình ảnh.
 \chapter{Hiện thực và đánh giá kết quả}
 \section{Tài nguyên cần thiết}
 \subsection{Ngôn ngữ Python}
-
-Python là ngôn ngữ lập trình thông dịch, hướng đối tượng, và là ngôn ngữ lập trình cấp cao được tạo ra bởi Guido van Rossum tại Centrum Wiskunde & Informatica (CWI) ở Hà Lan. Python là một ngôn ngữ có cú pháp đơn giản, dễ đọc hiểu, cách viết linh động, được biết như là một trong những ngôn ngữ lập trình nhập môn tốt nhất cho người bắt đầu lập trình và hiện nay đang được sử dụng rộng rãi trong nhiều lĩnh vực với nhiều mục đích khác nhau.
+Python là ngôn ngữ lập trình thông dịch, hướng đối tượng, và là ngôn ngữ lập trình cấp cao được tạo ra bởi Guido van Rossum tại Centrum Wiskunde và Informatica (CWI) ở Hà Lan. Python là một ngôn ngữ có cú pháp đơn giản, dễ đọc hiểu, cách viết linh động, được biết như là một trong những ngôn ngữ lập trình nhập môn tốt nhất cho người bắt đầu lập trình và hiện nay đang được sử dụng rộng rãi trong nhiều lĩnh vực với nhiều mục đích khác nhau.
 
 
 Đặc điểm của ngôn ngữ Python
 
 \begin{itemize}
-        \item Ngôn ngữ lập trình đơn giản, dễ học: Python có cú pháp rất đơn giản, rõ ràng. Nó dễ đọc và viết hơn rất nhiều khi so sánh với những ngôn ngữ lập trình khác như C++, Java, C#. Python làm cho việc lập trình trở nên thú vị, cho phép bạn tập trung vào những giải pháp chứ không phải cú pháp.
+        \item Ngôn ngữ lập trình đơn giản, dễ học: Python có cú pháp rất đơn giản, rõ ràng. Nó dễ đọc và viết hơn rất nhiều khi so sánh với những ngôn ngữ lập trình khác như C++, Java,... Python làm cho việc lập trình trở nên thú vị, cho phép bạn tập trung vào những giải pháp chứ không phải cú pháp.
         \item Miễn phí, mã nguồn mở: Ta có thể tự do sử dụng và phân phối Python, Python có một cộng đồng rộng lớn và không ngừng cải thiện.
         \item Là ngôn ngữ dynamic type, quản lý vùng nhớ tự động và hỗ trợ nhiều mô hình lập trình khác nhau như: lập trình hướng đối tượng, lập trình thủ tục và lập trình hàm. Là một ngôn ngữ rất phổ biến và có một lượng lớn các thư viện hỗ trợ như OpenCV, Numpy, Scikit, TensorFlow,...
         \item Python là ngôn ngữ có thể chạy trên nhiều nền tảng: Python có trên mọi hệ điều hành như Windows, Linux/Unix, OS/2, Mac, Amiga, và những hệ điều hành khác.
@@ -869,7 +877,7 @@ Tiếp tục tìm hiểu về lĩnh vực này. Hiện thực các phương phá
 \begin{thebibliography}{9}
 
 \bibitem{img-defi}
-Isaac Weiss. Digital Images. Truy xuất từ: \texttt{\burl{https://www.encyclopedia.com/computing/news-wires-white-papers-and-books/digital-imageas}}
+Isaac Weiss. Digital Images. Truy xuất từ:\texttt{\burl{https://www.encyclopedia.com/computing/news-wires-white-papers-and-books/digital-imageas}}
 
 \bibitem{img-format}
 Nguyễn Kiên. Tìm hiểu về các định dạng hình ảnh. Truy xuất từ: \texttt{\burl{https://blogchiasekienthuc.com/thu-thuat-hay/tim-hieu-ve-cac-dinh-dang-hinh-anh.html}}
@@ -923,6 +931,13 @@ Maria Tzelepi and Anastasios Tefas. Deep convolutional learning for Content Base
 \bibitem{paper-5} 
 Jiang Wang, Yang Song, Thomas Leung, Chuck Rosenberg, Jingbin Wang, James Philbin, Bo Chen, Ying Wu. Learning Fine-grained Image Similarity with Deep Ranking.
 \textit{IEEE Conference on Computer Vision and Pattern Recognition}, 2014.
+
+\bibitem{img-vgg}
+Davi Frossard. VGG in TensorFlow. Truy xuất từ: \texttt{\burl{https://www.cs.toronto.edu/~frossard/post/vgg16/}}
+
+\bibitem{paper-6} 
+Karen Simonyan, Andrew Zisserman. Very Deep Convolutional Networks for Large Scale Image Recognition.
+\textit{ ICLR }, 2015.
 \end{thebibliography}
 \end{document}
 
