@@ -1,32 +1,19 @@
 import unittest
-from .data_provider import DataProvider
-import matplotlib.pyplot as plt
+from . import data_provider
 
 
 class TestDataProvider(unittest.TestCase):
-    def test_load_cifar10(self):
-        data_provider = DataProvider(data_root='/home/victor/Learning/bku/dissertation/implementation/data')
-        dataset = data_provider.load('cifar-10', 'raw')
+    def test_load_default(self):
+        dataset = data_provider.load()
         print(dataset['classes'])
+        print(dataset['x_train'].shape)
+        print(dataset['x_valid'].shape)
         print(dataset['x_test'].shape)
-        print(dataset['y_train'])
-        plt.imshow(dataset['x_train'][0])
-        plt.show()
-
-    def test_load_vehicles(self):
-        data_provider = DataProvider(data_root='/home/victor/Learning/bku/dissertation/implementation/data')
-        dataset = data_provider.load('vehicles', 'raw')
-        print(dataset['classes'])
-        print(dataset['x_test'].shape)
-        print(dataset['y_train'])
-        plt.imshow(dataset['x_train'][0])
-        plt.show()
 
     def test_load_standford_online_products(self):
-        data_provider = DataProvider(data_root='/home/victor/Learning/bku/dissertation/implementation/data')
-        dataset = data_provider.load('standford_online_products', 'raw')
+        dataset = data_provider.load(dataset_name=data_provider.STANDFORD_ONLINE_PRODUCTS)
         print(dataset['classes'])
+        print(dataset['x_train'].shape)
+        print(dataset['x_valid'].shape)
         print(dataset['x_test'].shape)
-        print(dataset['y_train'])
-        plt.imshow(dataset['x_train'][0])
-        plt.show()
+

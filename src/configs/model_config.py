@@ -15,5 +15,5 @@ class ModelConfig(object):
     @staticmethod
     def _default_config():
         return {
-            'name': 'custom'
+            'name': 'vgg16'
         }

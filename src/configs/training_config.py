@@ -14,6 +14,7 @@ class TrainingConfig(object):
         self.batch_size = config_dict.get('batch_size', default['batch_size'])
         self.epochs = config_dict.get('epochs', default['epochs'])
         self.validation_split = config_dict.get('validation_split', default['validation_split'])
+        self.top_k = config_dict.get('top_k', default['top_k'])
 
     @staticmethod
     def _default_config():
@@ -23,5 +24,6 @@ class TrainingConfig(object):
             },
             'batch_size': 32,
             'epochs': 1,
-            'validation_split': 0.3
+            'validation_split': 0.3,
+            'top_k': 30
         }
