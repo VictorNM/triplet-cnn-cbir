@@ -539,7 +539,7 @@ Dùng để giảm kích thước của ma trận được tạo ra từ lớp n
 
 Tương tự như lớp convolutional, lớp pooling cũng sử dụng các filter để di chuyển qua từng vùng của đầu vào và tính giá trị đầu ra. Giá trị đầu ra thường được tính bằng cách lấy giá trị trung bình (average) hoặc giá trị lớn nhất (maximum) của các giá trị đầu vào.
 
-Kích thước của filter thường dùng là 2x2, bước trượt thường dùng 2.
+Kích thước của filter thường dùng là 2x2, bước trượt thường dùng 2. Trên hình \ref{fig:max-pooling} là ví dụ với filter size = 2 x 2, stride = 1.
 
 Kích thước ma trận đầu ra của lớp Pooling cũng có thể tính như sau:
 
@@ -557,6 +557,7 @@ $ S $: bước trượt \\
     \centering
     \includegraphics[scale=0.7]{img/maxpooling.png}
     \caption{Max pooling với filter size = 2 x 2, stride = 1}
+    \label{fig:max-pooling}
 \end{figure}
 
 \subsubsection*{Lớp fully-connected}
@@ -629,7 +630,7 @@ Lớp ranking trên cùng của mạng tính toán Loss của một triplet. L�
     \label{fig:vgg}
 \end{figure}
 
-Kiến trúc mạng VGG được giới thiệu bởi Simonyan và Zisserman vào năm 2014 trong bài báo "Very Deep Convolutional Networks for Large Scale Image Recognition". Đặc trưng của cấu trúc mạng này là sự đơn giản của nó, chỉ sử dụng những lớp tích chập 3x3 chồng lên nhau khi chiều sâu mạng tăng dần. Việc giảm kích thước được xử lý bởi hàm max pooling. Hai lớp fully-connected, mỗi lớp có 4096 node, theo sau hai lớp fully-connected là lớp kích hoạt softmax.
+Kiến trúc mạng VGG trong hình \ref{fig:vgg} được giới thiệu bởi Simonyan và Zisserman vào năm 2014 trong bài báo "Very Deep Convolutional Networks for Large Scale Image Recognition". Đặc trưng của cấu trúc mạng này là sự đơn giản của nó, chỉ sử dụng những lớp tích chập 3x3 chồng lên nhau khi chiều sâu mạng tăng dần. Việc giảm kích thước được xử lý bởi hàm max pooling. Hai lớp fully-connected, mỗi lớp có 4096 node, theo sau hai lớp fully-connected là lớp kích hoạt softmax.
 
 \begin{figure}  
     \centering
@@ -652,6 +653,96 @@ VGG có hai nhược điểm:
         \item Việc train chậm.
         \item Các trọng số của kiến trúc mạng này khá lớn (về mặt đĩa / băng thông).
 \end{itemize}
+
+\subsection{Giải thuật phân cụm K-means}
+
+\subsubsection*{ Định nghĩa giải thuật K-means }
+
+Giải thuật K-means dùng để phân cụm dữ liệu, với điểm trung tâm của mỗi cụm là giá trị trung bình của những đối tượng trong cụm đó.
+
+Input:
+\begin{itemize}
+        \item k: Số lượng cụm dữ liệu.
+        \item D: một dataset chứa n đối tượng.
+\end{itemize}
+
+Output: Tập dữ liệu được phân thành k cụm các đối tượng.
+
+Giải thuật:
+
+\begin{itemize}
+        \item Bước 1: Chọn k điểm bất kỳ trong tập dữ liệu làm center ban đầu.
+        \item Bước 2: Gán mỗi điểm dữ liệu vào cluster có center gần nó nhất.
+        \item Bước 3: Nếu việc gán dữ liệu vào từng cluster ở bước 2 không thay đổi so với vòng lặp trước nó thì ta dừng thuật toán.
+        \item Bước 4: Cập nhật center cho từng cluster bằng cách lấy trung bình cộng của tất các các điểm dữ liệu đã được gán vào cluster đó sau bước 2.
+        \item Bước 5: Quay lại bước 2.
+\end{itemize}
+
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.6]{img/kmean-1.png}
+    \caption{Chọn số cụm k = 2}
+    \cite{kmean}
+    \label{fig:kmean-2k}
+\end{figure}
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.6]{img/kmean-2.png}
+    \caption{Chọn ngẫu nhiên 2 điểm làm center}
+    \cite{kmean}
+    \label{fig:kmean-2center}
+\end{figure}
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.6]{img/kmean-3.png}
+    \caption{Lần lượt gán các điểm vào center gần nhất }
+    \cite{kmean}
+    \label{fig:kmean-assign}
+\end{figure}
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.6]{img/kmean-4.png}
+    \caption{sau khi phân cụm với center cũ, tiến hành chọn center mới}
+    \cite{kmean}
+    \label{fig:kmean-choosenewcenter}
+\end{figure}
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.6]{img/kmean-5.png}
+    \caption{Phân cụm với center mới}
+    \cite{kmean}
+    \label{fig:kmean-newclus}
+\end{figure}
+\begin{figure}  
+    \centering
+    \includegraphics[scale=0.6]{img/kmean-6.png}
+    \caption{Sau các bước lặp mà không có sự thay đổi, ta nhận được 2 cụm kết quả cuối cùng}
+    \cite{kmean}
+    \label{fig:kmean-finalResult}
+\end{figure}
+
+\subsubsection*{ Đặc điểm của giải thuật K-means }
+
+\begin{itemize}
+        \item Bài toán tối ưu hoá với cực trị cục bộ.
+        \item Mỗi cụm đặc trưng hoá bởi center của cụm (giá trị trung bình của cụm) nên bài toán đặt ra là số cụm (k) nên là bao nhiêu?
+        \item Giải thuật ảnh hưởng bởi nhiễu.
+        \item Không phù hợp với việc khai phá các cụm dữ liệu không lồi hoặc các cụm có kích thước khác nhau.
+\end{itemize}
+
+\subsubsection*{ Chất lượng của các cụm $C_i$ được tính bởi công thức sau: }
+
+\[ E = \sum_{i=1}^{k} \sum_{p \in C_i} dist(p,C_i)^2 \]
+
+E: Tổng bình phương sai số (SSE) của tất cả đối tượng trong tập dữ liệu.
+
+p: Là điểm trong không gian tập dữ liệu đại diện cho một đối tượng nhất định
+
+$c_i$ là trung tâm của cụm $C_i$
+
+dist là độ đo khoảng cách giữa hai đối tượng trong không gian Euclide:
+
+\[ dist(x,y) = (\sum_{k=1}^{n} |x_k - y_k|^2)^{1/2} \]
 
 \section{Các nghiên cứu liên quan}
 \subsection{Bài báo: "Deep learning for content-based image retrieval: A comprehensive study." \cite{paper-1}}
@@ -938,6 +1029,10 @@ Davi Frossard. VGG in TensorFlow. Truy xuất từ: \texttt{\burl{https://www.cs
 \bibitem{paper-6} 
 Karen Simonyan, Andrew Zisserman. Very Deep Convolutional Networks for Large Scale Image Recognition.
 \textit{ ICLR }, 2015.
+
+\bibitem{kmean}
+Luca Mel. K-means Clustering in Python . Truy xuất từ: \texttt{\burl{https://medium.com/data-py-blog/k-means-clustering-in-python-4fc8caa0e0d9}}
+
 \end{thebibliography}
 \end{document}
 
