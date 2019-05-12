@@ -18,7 +18,7 @@ def train_classifier(classifier, dataset, training_params):
     x_valid, y_valid = dataset['x_valid'], dataset['y_valid']
 
     classes = dataset['classes']
-    metadata_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/metadata.tsv'))
+    metadata_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../metadata.tsv'))
     with open(metadata_file, 'wt') as f:
         tsv_writer = csv.writer(f, delimiter='\t')
         for label in y_valid:

@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 import time
-
+from src import utils
 
 def evaluate_classifier(classifier, x, y, config):
     # simply call keras model evaluate method
@@ -13,13 +13,12 @@ def evaluate_classifier(classifier, x, y, config):
     return score
 
 
-def evaluate_extractor(extractor, dataset, mode, top_k=30):
+def evaluate_extractor(extractor, dataset, triplet_index, mode, top_k=30):
     """
     Evaluate using:
     - similarity_precision: percentage of triplets being correctly ranked.
         Given a triplet t_i = (a_i, p_i, n_i) where a_i: anchor, p_i: positive, n_i: negative
         t_i is correctly ranked if: distance(a_i, p_i) < distance(a_i, n_i)
-    - mean_category_precision_at_top_K: mean of percentage of positive / top N results
     - mAP
     """
     classes = dataset['classes']
@@ -31,9 +30,12 @@ def evaluate_extractor(extractor, dataset, mode, top_k=30):
     else:
         raise ValueError("Invalid param 'mode'")
 
+    # similarity precision
     start = time.time()
-    similarity_precision = _similarity_precision(extractor, x_test, y_test)
+    similarity_precision = _similarity_precision(extractor, x_test, triplet_index)
     print('Time evaluate similarity', time.time() - start)
+
+    # mAP
     start = time.time()
     mAP = _mAP(extractor, x_train, y_train, x_test, y_test, num_classes=len(classes), k=top_k)
     print('Time evaluate mAp', time.time() - start)
@@ -41,32 +43,21 @@ def evaluate_extractor(extractor, dataset, mode, top_k=30):
     return similarity_precision, mAP
 
 
-def _similarity_precision(extractor, x, y):
+def _similarity_precision(extractor, x, triplet_index):
     features = extractor.predict(x)
-    num_valid_triplets = _count_valid_triplets(features, y)
-
-    return num_valid_triplets / features.shape[0]
-
-
-def _count_valid_triplets(features, labels):
-    num_valid_triplets = 0
-    for a in range(features.shape[0]):
-        for p in range(features.shape[0]):
-            if p == a or labels[p] != labels[a]:
-                continue
-            for n in range(features.shape[0]):
-                if (a == n) or (p == n):
-                    continue
-                if labels[a] == labels[n]:
-                    continue
-                if _is_valid_triplet(features[a], features[p], features[n]):
-                    num_valid_triplets += 1
-
-    return num_valid_triplets
+    n_triplet = len(triplet_index)
+    return sum(
+        [1 for i in range(n_triplet)
+         if _is_valid_triplet(
+            a=features[triplet_index[i][0]],
+            p=features[triplet_index[i][1]],
+            n=features[triplet_index[i][2]]
+        )]
+    ) / n_triplet
 
 
 def _is_valid_triplet(a, p, n):
-    return _euclidean_distance(a, p) < _euclidean_distance(a, n)
+    return utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
 
 
 def _mAP(extractor, x_train, y_train, x_test, y_test, num_classes, k):

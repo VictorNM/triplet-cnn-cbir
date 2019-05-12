@@ -3,6 +3,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 import numpy as np
 from six.moves import cPickle as pickle
+from ..utils import get_triplet_index_all
 
 
 _data_root = ''
@@ -36,9 +37,20 @@ def load(data_root='../../data', dataset_name=STANDFORD_ONLINE_PRODUCTS, dataset
 
         # save pickle file for later
         print('Load data succeed')
-        _save_pickle(dataset, dataset_name, dataset_type)
+        save_pickle(dataset, dataset_name, dataset_type)
 
     return dataset
+
+
+def add_triplet_index(dataset, strategy='all'):
+    if strategy == 'all':
+        dataset['triplet_index_train'] = get_triplet_index_all(dataset['y_train'])
+        dataset['triplet_index_valid'] = get_triplet_index_all(dataset['y_valid'])
+        dataset['triplet_index_test'] = get_triplet_index_all(dataset['y_test'])
+    elif strategy == 'hard':
+        raise NotImplementedError("Strategy 'hard' not support yet")
+    else:
+        raise ValueError("Strategy must be 'all' or 'hard'")
 
 
 def subset(dataset, n_train=100, n_valid=20, n_test=20):
@@ -96,17 +108,17 @@ def _load_standford_online_product(datatype):
     return dataset
 
 
-def _save_pickle(data, dataset_name, dataset_type):
+def save_pickle(dataset, dataset_name, dataset_type):
     pickle_file_name = dataset_name + '.pickle'
     pickle_file_path = os.path.join(_data_root, dataset_type, pickle_file_name)
     print('Saving dataset to %s' % pickle_file_path)
     try:
         f = open(pickle_file_path, 'wb')
-        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
         f.close()
-        print('Saved data success')
+        print('Saved dataset success')
     except Exception as e:
-        print('Unable to save data:', e)
+        print('Unable to save dataset:', e)
         raise
 
 
