@@ -22,6 +22,8 @@ def evaluate_extractor(extractor, dataset, mode, evaluate_params):
         t_i is correctly ranked if: distance(a_i, p_i) < distance(a_i, n_i)
     - mAP
     """
+    print('Evaluating on %s set...' % mode)
+
     classes = dataset['classes']
     x_train, y_train = dataset['x_train'], dataset['y_train']
     if mode == 'valid':
@@ -48,8 +50,11 @@ def evaluate_extractor(extractor, dataset, mode, evaluate_params):
 
 
 def _similarity_precision(extractor, x, triplet_index):
+    print('Calculating similarity precision...')
     features = extractor.predict(x)
+    print('Total number of features:', len(features))
     n_triplet = len(triplet_index)
+    print('Total number of triplet:', n_triplet)
     return sum(
         [1 for i in range(n_triplet)
          if _is_valid_triplet(
@@ -61,8 +66,9 @@ def _similarity_precision(extractor, x, triplet_index):
 
 
 def _is_valid_triplet(a, p, n):
-    valid = utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
-    return valid is not None
+    return np.sqrt(np.sum(np.square(a - p))) < np.sqrt(np.sum(np.square(a - n)))
+    # valid = utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
+    # return valid is not None
 
 
 def _mAP(extractor, x_train, y_train, x_test, y_test, num_classes, k):
