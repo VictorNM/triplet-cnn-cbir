@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 import time
 from src import utils
 
+
 def evaluate_classifier(classifier, x, y, config):
     # simply call keras model evaluate method
     score = classifier.evaluate(
@@ -13,7 +14,7 @@ def evaluate_classifier(classifier, x, y, config):
     return score
 
 
-def evaluate_extractor(extractor, dataset, triplet_index, mode, top_k=30):
+def evaluate_extractor(extractor, dataset, mode, evaluate_params):
     """
     Evaluate using:
     - similarity_precision: percentage of triplets being correctly ranked.
@@ -25,8 +26,10 @@ def evaluate_extractor(extractor, dataset, triplet_index, mode, top_k=30):
     x_train, y_train = dataset['x_train'], dataset['y_train']
     if mode == 'valid':
         x_test, y_test = dataset['x_valid'], dataset['y_valid']
+        triplet_index = dataset['triplet_index_valid']
     elif mode == 'test':
         x_test, y_test = dataset['x_test'], dataset['y_test']
+        triplet_index = dataset['triplet_index_test']
     else:
         raise ValueError("Invalid param 'mode'")
 
@@ -37,6 +40,7 @@ def evaluate_extractor(extractor, dataset, triplet_index, mode, top_k=30):
 
     # mAP
     start = time.time()
+    top_k = evaluate_params['top_k']
     mAP = _mAP(extractor, x_train, y_train, x_test, y_test, num_classes=len(classes), k=top_k)
     print('Time evaluate mAp', time.time() - start)
 
