@@ -45,17 +45,15 @@ def load(data_root='../../data', dataset_name=STANDFORD_ONLINE_PRODUCTS, dataset
 def add_triplet_index(dataset, strategy='all'):
     print('Adding triplet index, using strategy', strategy)
     if strategy == 'all':
-        return {
-            **dataset,
-            dataset['triplet_index_train']: get_triplet_index_all(dataset['y_train']),
-            dataset['triplet_index_valid']: get_triplet_index_all(dataset['y_valid']),
-            dataset['triplet_index_test']: get_triplet_index_all(dataset['y_test'])
-        }
-
-    if strategy == 'hard':
+        dataset['triplet_index_train'] = get_triplet_index_all(dataset['y_train'])
+        dataset['triplet_index_valid'] = get_triplet_index_all(dataset['y_valid'])
+        dataset['triplet_index_test'] = get_triplet_index_all(dataset['y_test'])
+    elif strategy == 'hard':
         raise NotImplementedError("Strategy 'hard' not support yet")
+    else:
+        raise ValueError("Strategy must be 'all' or 'hard'")
 
-    raise ValueError("Strategy must be 'all' or 'hard'")
+    return dataset
 
 
 def subset(dataset, n_train=100, n_valid=20, n_test=20):
