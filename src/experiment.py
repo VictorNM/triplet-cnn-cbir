@@ -61,7 +61,8 @@ def _similarity_precision(extractor, x, triplet_index):
 
 
 def _is_valid_triplet(a, p, n):
-    return utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
+    valid = utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
+    return valid is not None
 
 
 def _mAP(extractor, x_train, y_train, x_test, y_test, num_classes, k):
