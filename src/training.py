@@ -1,6 +1,6 @@
 from keras.callbacks import TensorBoard
 from keras.utils import to_categorical
-from keras.optimizers import SGD
+from keras.optimizers import SGD,Adam
 import time
 import csv
 import os
@@ -60,5 +60,12 @@ def _get_optimizer(config_optimizer):
             for k in config_optimizer.keys() - {'name'}
         }
         return SGD(**params)
+        
+    if config_optimizer['name'] == 'Adam':
+        params = {
+            k: config_optimizer[k]
+            for k in config_optimizer.keys() - {'name'}
+        }
+        return Adam(**params)
 
     raise ValueError("Invalid optimizer configuration. Optimizer name should in {'SGD'}")
