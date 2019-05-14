@@ -1,6 +1,6 @@
 from src.data import data_provider, data_processor
 from src.model import model_provider
-from src import training, experiment, database
+from src import training, experiment, kmeandatabase
 import gc
 
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     }
     scores = experiment.evaluate_extractor(cnn_extractor, dataset_final, mode='valid', evaluate_params=evaluate_params)
 
-    db = database.Database(cnn_extractor)
+    db = kmeandatabase.KmeanDatabase(cnn_extractor)
     db.create_database(dataset_final['x_train'], dataset_final['y_train'], dataset_final['classes'])
     db.query(dataset_final['x_valid'][0])
 
