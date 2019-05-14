@@ -4,7 +4,7 @@ import time
 from . import utils
 
 
-class ImageDatabase:
+class Database:
     def __init__(self, extractor):
         self.extractor = extractor
         self.images = None
@@ -29,7 +29,7 @@ class ImageDatabase:
     def query(self, image, num_results=0):
         print('Querying...')
         start = time.time()
-        query_feature = self.extractor.predict(image.reshape(1, -1))
+        query_feature = self.extractor.predict(np.expand_dims(image, axis=0))
 
         cluster_index = self.kmeans.predict(query_feature)
         result_index = utils.where_equal(self.kmeans.labels_, cluster_index)
