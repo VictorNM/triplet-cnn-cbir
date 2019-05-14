@@ -55,7 +55,7 @@ if __name__ == '__main__':
     }
     scores = experiment.evaluate_extractor(cnn_extractor, dataset_final, mode='valid', evaluate_params=evaluate_params)
 
-    db = database.KmeanDatabase(cnn_extractor)
+    db = database.NormalDatabase(cnn_extractor)
     db.create_database(dataset_final['x_train'], dataset_final['y_train'], dataset_final['classes'])
     db.query(dataset_final['x_valid'][0])
 
