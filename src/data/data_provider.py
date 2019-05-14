@@ -30,12 +30,7 @@ def load(data_root='../../data', dataset_name=STANDFORD_ONLINE_PRODUCTS, dataset
         print('Load data succeed')
     except FileNotFoundError:
         print('Pickle file not found, try to read from directory')
-        if dataset_name == STANDFORD_ONLINE_PRODUCTS:
-            dataset = _load_standford_online_product(dataset_type)
-        else:
-            raise NotImplementedError
-
-        # save pickle file for later
+        dataset = _load_from_folder(dataset_name, dataset_type)
         print('Load data succeed')
         save_pickle(dataset, dataset_name, dataset_type)
 
@@ -45,7 +40,6 @@ def load(data_root='../../data', dataset_name=STANDFORD_ONLINE_PRODUCTS, dataset
 def add_triplet_index(dataset, strategy='all'):
     print('Adding triplet index, using strategy', strategy)
     if strategy == 'all':
-        dataset['triplet_index_train'] = get_triplet_index_all(dataset['y_train'])
         dataset['triplet_index_valid'] = get_triplet_index_all(dataset['y_valid'])
         dataset['triplet_index_test'] = get_triplet_index_all(dataset['y_test'])
     elif strategy == 'hard':
@@ -79,8 +73,8 @@ def _load_from_pickle_file(dataset_name, dataset_type):
     raise FileNotFoundError
 
 
-def _load_standford_online_product(datatype):
-    data_path = os.path.join(_data_root, datatype, 'standford_online_products')
+def _load_from_folder(dataset_name, dataset_type):
+    data_path = os.path.join(_data_root, dataset_type, dataset_name)
     train_data_path = os.path.join(data_path, 'train')
     test_data_path = os.path.join(data_path, 'test')
 

@@ -1,6 +1,7 @@
 from src.data import data_provider, data_processor
 from src.model import model_provider
-from src import training
+from src import training, experiment
+import gc
 
 
 def free_mem():
@@ -8,13 +9,17 @@ def free_mem():
         if not name.startswith('_'):
             del globals()[name]
 
+    gc.collect()
+
 
 if __name__ == '__main__':
     # Prepare data
     dataset_raw = data_provider.load(
         data_root='/home/victor/Learning/bku/dissertation/implementation/data'
     )
-    dataset_raw = data_provider.subset(dataset_raw) # get smaller dataset for testing
+    dataset_raw = data_provider.subset(dataset_raw, 10, 5, 5) # get smaller dataset for testing
+    gc.collect()
+
     input_shape = (224, 224, 3)
     dataset_inter = data_processor.normalize(dataset_raw, input_shape)
     dataset_final = data_processor.augment(dataset_inter, {})
@@ -41,5 +46,13 @@ if __name__ == '__main__':
     }
 
     cnn_classifier, history = training.train_classifier(cnn_classifier, dataset_final, training_params)
+
+    cnn_extractor = model_provider.build_cnn_extractor(cnn_classifier)
+    dataset_final = data_provider.add_triplet_index(dataset_final)
+
+    evaluate_params = {
+        "top_k": 1
+    }
+    scores = experiment.evaluate_extractor(cnn_extractor, dataset_final, mode='valid', evaluate_params=evaluate_params)
 
     free_mem()

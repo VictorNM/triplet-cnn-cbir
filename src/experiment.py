@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 import time
-from src import utils
+from . import utils
 
 
 def evaluate_classifier(classifier, x, y, config):
@@ -66,14 +66,17 @@ def _similarity_precision(extractor, x, triplet_index):
 
 
 def _is_valid_triplet(a, p, n):
-    return np.sqrt(np.sum(np.square(a - p))) < np.sqrt(np.sum(np.square(a - n)))
-    # valid = utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
-    # return valid is not None
+    return utils.euclidean_distance(a, p) < utils.euclidean_distance(a, n)
 
 
 def _mAP(extractor, x_train, y_train, x_test, y_test, num_classes, k):
+    print('Calculating mAP...')
+
     x_train_vectors = extractor.predict(x_train)
     x_test_vectors = extractor.predict(x_test)
+
+    print('Total features in database:', len(x_train_vectors))
+    print('Total queries for evaluating:', len(x_test_vectors))
 
     kmeans = _create_kmeans(x_train_vectors, n_clusters=num_classes)
     test_kmeans_labels = kmeans.predict(x_test_vectors)
@@ -103,10 +106,10 @@ def _AP(query_vector, query_label, query_kmeans_label, kmeans_labels, x_train_ve
     ])
 
 
-def _do_query(query_kmeans_label, kmeans_labels, vectors_database, labels_databsse):
-    indexes = _where_equal(kmeans_labels, query_kmeans_label)
+def _do_query(query_kmeans_label, kmeans_labels, vectors_database, labels_database):
+    indexes = utils.where_equal(kmeans_labels, query_kmeans_label)
     result_vectors = vectors_database[indexes]
-    result_labels = labels_databsse[indexes]
+    result_labels = labels_database[indexes]
 
     return result_vectors, result_labels
 

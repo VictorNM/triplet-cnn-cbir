@@ -35,8 +35,8 @@ def train_classifier(classifier, dataset, training_params):
     start = time.time()
     train_history = classifier.fit(
         x=x_train,
-        y=to_categorical(y_train),
-        validation_data=(x_valid, to_categorical(y_valid)),
+        y=to_categorical(y_train, len(classes)),
+        validation_data=(x_valid, to_categorical(y_valid, len(classes))),
         callbacks=[tensor_board],
         **training_params
     )

@@ -1,11 +1,21 @@
 import time
-
-import math
+from math import inf
+import numpy as np
 from keras import backend as K
 
 
-def euclidean_distance(a, b):
+def euclidean_distance_keras(a, b):
     return K.sqrt(K.sum(K.square(a - b)))
+
+
+def euclidean_distance(a, b):
+    return np.sqrt(np.sum(np.square(a - b)))
+
+
+def where_equal(arr, val):
+    # return index of values in arr that equal to val
+    # return type: 1-D numpy array
+    return np.array(np.asanyarray(arr == val).nonzero()).flatten()
 
 
 def get_triplet_index_all(labels):
@@ -17,13 +27,11 @@ def get_triplet_index_all(labels):
             if j == i or labels[j] != labels[i]:
                 continue
             for k in range(len(labels)):
-                if (i == k) or (j == k):
-                    continue
                 if labels[i] == labels[k]:
                     continue
                 triplets.append([i, j, k])
 
-    print('Time for finding all triplet index:', time.time() - start)
+    print('Found %d triplet index in %s:' % (len(triplets), time.time() - start))
     return triplets
 
 
@@ -34,14 +42,14 @@ def get_triplet_index_hard(features, labels):
     for i in range(len(labels)):
         max_pos_d = 0
         max_pos_idx = None
-        min_neg_d = math.inf
+        min_neg_d = inf
         min_neg_idx = None
 
         for j in range(len(labels)):
             if j == i:  # ignore the same image
                 continue
 
-            distance = euclidean_distance(features[i], features[j])
+            distance = euclidean_distance_keras(features[i], features[j])
 
             if labels[j] == labels[i]:  # positive
                 if distance > max_pos_d:
