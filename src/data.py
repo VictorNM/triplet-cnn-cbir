@@ -1,6 +1,10 @@
 import numpy as np
 
 
+def test():
+    print('hello')
+
+
 def convert_generator_to_data(generator):
     generator.reset()
 
