@@ -1,7 +1,12 @@
 import time
 from math import inf
 import numpy as np
+from datetime import datetime
+from pytz import timezone, country_timezones
 from keras import backend as K
+import os
+from csv import writer
+import requests
 
 
 def euclidean_distance_keras(a, b):
@@ -65,3 +70,7 @@ def get_triplet_index_hard(features, labels):
 
     print('Time for finding hard triplet index:', time.time() - start)
     return triplets
+
+def get_datetime_train():
+    tz = timezone(country_timezones('vn')[0])
+    return datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
