@@ -1,5 +1,8 @@
 import numpy as np
 
+def test():
+    return 'hello'
+
 
 def convert_generator_to_data(generator):
     generator.reset()
