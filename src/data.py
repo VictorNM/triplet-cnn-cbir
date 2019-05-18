@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def convert_generator_to_data(generator):
     generator.reset()
 
