@@ -5,7 +5,7 @@ def test():
     print('hello')
 
 
-def convert_generator_to_data(generator):
+def convert_generator_to_data(generator, batchs=None):
     generator.reset()
 
     x_shape = (generator.n,) + generator.image_shape
@@ -14,7 +14,10 @@ def convert_generator_to_data(generator):
     y_shape = generator.n
     y = np.ndarray(shape=y_shape, dtype=generator.dtype)
 
-    for i in range(generator.__len__()):
+    if batchs is None:
+        batchs = generator.__len__()
+
+    for i in range(batchs):
         x_batch, y_batch = generator.next()
         start_index = i * generator.batch_size
         end_index = (i + 1) * generator.batch_size
