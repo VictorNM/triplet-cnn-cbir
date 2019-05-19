@@ -11,7 +11,7 @@ def convert_generator_to_data(generator, batchs=None):
     if batchs is None or batchs > generator.__len__():
         batchs = generator.__len__()
 
-    num_samples = max(batchs * generator.batch_size, generator.n)
+    num_samples = min(batchs * generator.batch_size, generator.n)
     x_shape = (num_samples, ) + generator.image_shape
     x = np.empty(shape=x_shape)
 
