@@ -36,7 +36,7 @@ class KmeanDatabase:
 
         result_features = self.features[result_index]
 
-        distances = [utils.euclidean_distance(query_feature, result_feature) for result_feature in result_features]
+        distances = utils.euclidean_distance(query_feature, result_features)
         sorted_result_index = result_index[np.argsort(distances)]
         print('Query finished in %ds' % (time.time() - start))
 
