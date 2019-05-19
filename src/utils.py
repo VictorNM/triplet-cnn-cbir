@@ -14,7 +14,7 @@ def euclidean_distance_keras(a, b):
 
 
 def euclidean_distance(a, b):
-    return np.sqrt(np.sum(np.square(a - b)))
+    return np.sqrt(np.sum(np.square(a - b), axis=-1))
 
 
 def where_equal(arr, val):

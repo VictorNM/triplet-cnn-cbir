@@ -2,6 +2,7 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 import os
 from csv import writer
 from requests import get
+import time
 
 
 def get_tensorboard_url(logs_dir):
@@ -16,6 +17,9 @@ def get_tensorboard_url(logs_dir):
     os.system(
         'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'.format(logs_dir))
     os.system('./ngrok http 6006 &')
+
+    time.sleep(2) # wait for host initialize
+
     res = get('http://localhost:4040/api/tunnels')
 
     return res.json()['tunnels'][0]['public_url']
@@ -48,6 +52,9 @@ def get_tensorboard(logs_dir, datetime_train, x, y, classes, params):
 
 def get_model_checkpoint(models_dir, datetime_train, params):
     model_file_path = os.path.join(models_dir, datetime_train + '.h5')
+    if not os.path.exists(model_file_path):
+        os.makedirs(os.path.dirname(model_file_path))
+
     return ModelCheckpoint(
         filepath=model_file_path,
         **params

@@ -6,8 +6,6 @@ def test():
 
 
 def convert_generator_to_data(generator, batchs=None):
-    generator.reset()
-
     if batchs is None or batchs > generator.__len__():
         batchs = generator.__len__()
 
@@ -24,7 +22,7 @@ def convert_generator_to_data(generator, batchs=None):
         end_index = start_index + len(x_batch)
         x[start_index:end_index] = x_batch
         y[start_index:end_index] = np.argmax(y_batch, axis=1)
-
+        
     return x, y
 
 # def save_pickle(dataset, dataset_name, dataset_type):
