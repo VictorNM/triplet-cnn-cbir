@@ -63,14 +63,14 @@ def mAP_kmeans(extractor, db, queries):
         same_cluster_distances = utils.euclidean_distance(query_feature, same_cluster_features)
 
         sorted_same_cluster_indices = np.argsort(same_cluster_distances)
-        sorted_same_cluster_labels = db_labels[same_cluster_labels[sorted_same_cluster_indices]]
+        sorted_same_cluster_labels = db_labels[same_cluster_indices[sorted_same_cluster_indices]]
 
         diff_cluster_features = db_features[diff_cluster_indices]
         diff_cluster_labels = db_labels[diff_cluster_indices]
         diff_cluster_distances = utils.euclidean_distance(query_feature, diff_cluster_features)
 
         sorted_diff_cluster_indices = np.argsort(diff_cluster_distances)
-        sorted_diff_cluster_labels = db_labels[diff_cluster_labels[sorted_diff_cluster_indices]]
+        sorted_diff_cluster_labels = db_labels[diff_cluster_indices[sorted_diff_cluster_indices]]
 
         sorted_labels = np.concatenate(sorted_same_cluster_labels, sorted_diff_cluster_labels)
 
