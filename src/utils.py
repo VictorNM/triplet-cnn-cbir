@@ -1,16 +1,17 @@
-import time
-from math import inf
-import numpy as np
-from datetime import datetime
-from pytz import timezone, country_timezones
-from keras import backend as K
 import os
+import time
 from csv import writer
+from datetime import datetime
+from math import inf
+
+import numpy as np
 import requests
+from keras import backend as K
+from pytz import country_timezones, timezone
 
 
 def euclidean_distance_keras(a, b):
-    return K.sqrt(K.sum(K.square(a - b)))
+    return K.sqrt(K.sum(K.square(a - b), axis=-1))
 
 
 def euclidean_distance(a, b):

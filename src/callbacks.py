@@ -1,8 +1,9 @@
-from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 import os
-from csv import writer
-from requests import get
 import time
+from csv import writer
+
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from requests import get
 
 
 def get_tensorboard_url(logs_dir):
@@ -30,7 +31,7 @@ def get_tensorboard(logs_dir, datetime_train, x, y, classes, params):
     metadata_path = os.path.join(log_dir, 'metadata.tsv')
 
    # create metadata file
-    if not os.path.exists(metadata_path):
+    if not os.path.exists(os.path.dirname(metadata_path)):
         os.makedirs(os.path.dirname(metadata_path))
 
     with open(metadata_path, 'wt') as f:
@@ -52,7 +53,7 @@ def get_tensorboard(logs_dir, datetime_train, x, y, classes, params):
 
 def get_model_checkpoint(models_dir, datetime_train, params):
     model_file_path = os.path.join(models_dir, datetime_train + '.h5')
-    if not os.path.exists(model_file_path):
+    if not os.path.exists(os.path.dirname(model_file_path)):
         os.makedirs(os.path.dirname(model_file_path))
 
     return ModelCheckpoint(

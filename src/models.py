@@ -1,8 +1,6 @@
 import keras
+from keras.layers import Conv2D, Dense, Dropout, Flatten, Input, MaxPooling2D
 from keras.models import Model, Sequential
-from keras.layers import Input
-from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Dense, Flatten, Dropout
 
 FC1 = 'fc1'
 FC2 = 'fc2'
