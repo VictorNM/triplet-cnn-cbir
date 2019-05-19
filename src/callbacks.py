@@ -43,7 +43,6 @@ def get_tensorboard(logs_dir, datetime_train, x, y, classes, params):
 
     return TensorBoard(
         log_dir=log_dir,
-        embeddings_freq=1,
         embeddings_layer_names=['fc2'],
         embeddings_data=x,
         embeddings_metadata='metadata.tsv',
