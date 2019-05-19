@@ -75,7 +75,7 @@ class NormalDatabase:
         start = time.time()
         query_feature = self.extractor.predict(np.expand_dims(image, axis=0))
 
-        distances = [utils.euclidean_distance(query_feature, db_feature) for db_feature in self.features]
+        distances = utils.euclidean_distance(query_feature, self.features)
         sorted_result_index = np.argsort(distances)
         print('Query finished in %ds' % (time.time() - start))
 
