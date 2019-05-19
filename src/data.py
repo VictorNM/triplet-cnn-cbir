@@ -8,23 +8,18 @@ def test():
 def convert_generator_to_data(generator, batchs=None):
     generator.reset()
 
-    x_shape = (generator.n,) + generator.image_shape
-    x = np.ndarray(shape=x_shape, dtype=generator.dtype)
-
-    y_shape = generator.n
-    y = np.ndarray(shape=y_shape, dtype=generator.dtype)
-
     if batchs is None:
         batchs = generator.__len__()
 
-    for i in range(batchs):
-        x_batch, y_batch = generator.next()
-        start_index = i * generator.batch_size
-        end_index = (i + 1) * generator.batch_size
-        x[start_index:end_index] = x_batch
-        y[start_index:end_index] = np.argmax(y_batch, axis=1)
+    x = []
+    y = []
 
-    return x, y
+    for i in range(batchs):
+        x_batch, y_batch = generator.__getitem__(i)
+        x.append(x_batch)
+        y.append(np.argmax(y_batch, axis=1))
+
+    return np.array(x), np.array(y)
 
 # def save_pickle(dataset, dataset_name, dataset_type):
 #     pickle_file_name = dataset_name + '.pickle'
