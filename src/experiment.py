@@ -125,3 +125,12 @@ def AP_kmeans(query_feature, query_label, kmean_prediction, db_features, db_labe
             sum_precisions += tp / (j+1)
 
     return sum_precisions / total_relevents
+
+
+
+def mean_precision_at_k():
+    pass
+
+
+def precision_at_k():
+    pass

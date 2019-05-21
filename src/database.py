@@ -13,11 +13,10 @@ class KmeanDatabase:
         self.labels = None
         self.kmeans = None
 
-    def create_database(self, images, labels, classes):
+    def create_database(self, images, classes):
         print('Creating database with %d images...' % images.shape[0])
         start = time.time()
         self.images = images
-        self.labels = labels
         self.classes = classes
         self.features = self.extractor.predict(images)
 
@@ -60,11 +59,10 @@ class NormalDatabase:
         self.classes = None
         self.labels = None
 
-    def create_database(self, images, labels, classes):
+    def create_database(self, images, classes):
         print('Creating database with %d images...' % images.shape[0])
         start = time.time()
         self.images = images
-        self.labels = labels
         self.classes = classes
         self.features = self.extractor.predict(images)
 

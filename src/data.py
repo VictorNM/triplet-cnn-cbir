@@ -1,10 +1,6 @@
 import numpy as np
 
 
-def test():
-    print('hello')
-
-
 def convert_generator_to_data(generator, batchs=None):
     if batchs is None or batchs > generator.__len__():
         batchs = generator.__len__()
