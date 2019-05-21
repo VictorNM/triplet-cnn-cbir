@@ -4,6 +4,9 @@ from collections import Counter
 
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.decomposition import PCA
+
+from src import utils
 
 plt.rcdefaults()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -58,3 +61,23 @@ def show_many_images(images, row=4, col=4):
     for i in range(row):
         for j in range(col):
             axarr[i, j].imshow(images[i * row + j])
+
+
+def plot_pca(features, labels, classes, n_components=10):
+    pca = PCA(n_components=n_components)
+    pca.fit(features.T)
+
+    fig = plt.figure(figsize = (8,8))
+    ax = fig.add_subplot(1,1,1) 
+    ax.set_title('PCA', fontsize = 20)
+
+    targets = list(range(len(classes)))
+    colors = ['r', 'b']
+    for target, color in zip(targets, colors):
+        indicesToKeep = utils.where_equal(labels, target)
+        ax.scatter(pca.components_[0, indicesToKeep],
+                pca.components_[1, indicesToKeep],
+                c = color,
+                s = 10)
+    ax.legend(classes)
+    ax.grid()
