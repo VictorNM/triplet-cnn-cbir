@@ -18,14 +18,14 @@ class TripletGenerator(Sequence):
 
         self.gen0 = datagen.flow_from_directory(
             directory=directory,
-            input_size=input_size,
+            target_size=input_size,
             batch_size=batch_size,
             classes=[classes[0]]
         )
 
         self.gen1 = datagen.flow_from_directory(
             directory=directory,
-            input_size=input_size,
+            target_size=input_size,
             batch_size=batch_size,
             classes=[classes[1]]
         )
