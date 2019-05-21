@@ -14,7 +14,7 @@ class TripletGenerator(Sequence):
         classes = os.listdir(directory)
         datagen = ImageDataGenerator(rescale=1./255, samplewise_center=True)
 
-        input_size = extractor.layer[0].input_shape[1:-1]
+        input_size = extractor.layers[0].input_shape[1:-1]
 
         self.gen0 = datagen.flow_from_directory(
             directory=directory,
