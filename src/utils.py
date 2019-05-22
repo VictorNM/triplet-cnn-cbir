@@ -8,6 +8,7 @@ import numpy as np
 import requests
 from keras import backend as K
 from pytz import country_timezones, timezone
+import pickle
 
 
 def euclidean_distance_keras(a, b):
@@ -75,3 +76,23 @@ def get_triplet_index_hard(features, labels):
 def get_datetime_train():
     tz = timezone(country_timezones('vn')[0])
     return datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+
+
+def save_pickle(data, file_path):
+    pickle_file_path = file_path + '.pickle'
+    try:
+        f = open(pickle_file_path, 'wb')
+        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+    except Exception as e:
+        print('Unable to save:', e)
+        raise
+
+
+def load_pickle(file_path):
+    try:
+        f = open(file_path, 'rb')
+        return pickle.load(f)
+    except Exception as e:
+        print('Unable to load:', e)
+        raise
