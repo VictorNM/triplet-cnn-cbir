@@ -23,8 +23,8 @@ def AP_normal(features, labels, index):
     query_feature = features[index]
     query_label = labels[index]
 
-    db_features = features.delete(index)
-    db_labels = features.delete(index)
+    db_features = np.delete(features, index)
+    db_labels = np.delete(labels, index)
 
     total_relevents = len(utils.where_equal(db_features, query_label))
 
@@ -66,8 +66,8 @@ def AP_kmeans(features, labels, index):
     query_feature = features[index]
     query_label = labels[index]
 
-    db_features = features.delete(index)
-    db_labels = features.delete(index)
+    db_features = np.delete(features, index)
+    db_labels = np.delete(labels, index)
 
     total_relevents = len(utils.where_equal(db_labels, query_label))
 
@@ -129,8 +129,8 @@ def precision_at_k_normal(features, labels, index, k):
     query_feature = features[index]
     query_label = labels[index]
 
-    db_features = features.delete(index)
-    db_labels = labels.delete(index)
+    db_features = np.delete(features, index)
+    db_labels = np.delete(labels, index)
 
     distances = utils.euclidean_distance(query_feature, db_features)
     sorted_indices = np.argsort(distances)[:k]
