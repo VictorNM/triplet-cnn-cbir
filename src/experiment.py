@@ -26,7 +26,7 @@ def AP_normal(features, labels, index):
     db_features = np.delete(features, index, axis=0)
     db_labels = np.delete(labels, index, axis=0)
 
-    total_relevents = len(utils.where_equal(db_features, query_label))
+    total_relevents = len(utils.where_equal(db_labels, query_label))
 
     # if db doesn't have relevant images, return 0
     if total_relevents == 0:
