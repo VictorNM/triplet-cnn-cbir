@@ -23,12 +23,29 @@ class TestDatabase(unittest.TestCase):
 
         db.create_features_database()
 
-    def test_query(self):
+    def test_create_kmeans(self):
+        extractor = load_model('/home/victor/Learning/bku/dissertation/implementation/models/worked-triplet-loss-0.81_0.87.h5')
+        directory = '/home/victor/Learning/bku/dissertation/implementation/database/stanford_online_products'
+        db = Database(extractor, directory)
+        db.create_kmeans(2)
+
+    def test_query_kmeans(self):
+        extractor = load_model('/home/victor/Learning/bku/dissertation/implementation/models/worked-triplet-loss-0.81_0.87.h5')
+        directory = '/home/victor/Learning/bku/dissertation/implementation/database/stanford_online_products'
+        db = Database(extractor, directory)
+        db.create_kmeans(2)
+        query_image = cv2.imread('/home/victor/Learning/bku/dissertation/implementation/database/stanford_online_products/images/111169942421_0.JPG', cv2.IMREAD_COLOR)
+        images = db.query(query_image, use_kmeans=True, num_results=5)
+
+        print(len(images))
+        print(images[0].shape)
+
+    def test_query_normal(self):
         extractor = load_model('/home/victor/Learning/bku/dissertation/implementation/models/worked-triplet-loss-0.81_0.87.h5')
         directory = '/home/victor/Learning/bku/dissertation/implementation/database/stanford_online_products'
         db = Database(extractor, directory)
         query_image = cv2.imread('/home/victor/Learning/bku/dissertation/implementation/database/stanford_online_products/images/111169942421_0.JPG', cv2.IMREAD_COLOR)
-        images = db.query(query_image, num_results=1)
+        images = db.query(query_image, use_kmeans=False, num_results=5)
 
         print(len(images))
         print(images[0].shape)
