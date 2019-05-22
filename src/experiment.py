@@ -6,61 +6,35 @@ from sklearn.cluster import KMeans
 from . import utils
 
 
-def mAP_normal(extractor, db, queries):
-    db_images, db_labels = db
-    db_features = extractor.predict(db_images)
-
-    query_images, query_labels = queries
-    query_features = extractor.predict(query_images)
+def mAP_normal(extractor, x, y):
+    features = extractor.predict(x)
 
     return np.mean(
         [AP_normal(
-            query_feature=query_features[i],
-            query_label=query_labels[i],
-            db_features=db_features,
-            db_labels=db_labels
+            features=features,
+            labels=y,
+            index=i
         )
-            for i in range(len(query_features))]
+            for i in range(len(features))]
     )
 
 
-def mAP_kmeans(extractor, db, queries):
-    db_images, db_labels = db
-    db_features = extractor.predict(db_images)
+def AP_normal(features, labels, index):
+    query_feature = features[index]
+    query_label = labels[index]
 
-    query_images, query_labels = queries
-    query_features = extractor.predict(query_images)
+    db_features = features.delete(index)
+    db_labels = features.delete(index)
 
-    num_classes = len(set(db_labels))
-    kmeans = KMeans(num_classes)
-    kmeans.fit(db_features)
+    total_relevents = len(utils.where_equal(db_features, query_label))
 
-    kmean_predictions = kmeans.predict(query_features)
-
-    num_queries = len(query_labels)
-
-    return np.mean([
-        AP_kmeans(
-            query_feature=query_features[i],
-            query_label=query_labels[i],
-            kmean_prediction=kmean_predictions[i],
-            db_features=db_features,
-            db_labels=db_labels,
-            kmean_labels=kmeans.labels_
-        )
-        for i in range(num_queries)
-    ])
-
-
-def AP_normal(query_feature, query_label, db_features, db_labels):
-    total_relevents = len(utils.where_equal(db_labels, query_label))
-
-    # if db doesn't have relevants image, return 0
+    # if db doesn't have relevant images, return 0
     if total_relevents == 0:
         return 0
 
     distances = utils.euclidean_distance(query_feature, db_features)
     sorted_index = np.argsort(distances)
+
     sorted_labels = db_labels[sorted_index]
 
     total_images = len(sorted_labels)
@@ -72,26 +46,46 @@ def AP_normal(query_feature, query_label, db_features, db_labels):
             tp += 1
             sum_precisions += tp / (i+1)
 
-    if tp == 0:
-        return 0
-
     return sum_precisions / total_relevents
 
 
-def AP_kmeans(query_feature, query_label, kmean_prediction, db_features, db_labels, kmean_labels):
+def mAP_kmeans(extractor, x, y):
+    features = extractor.predict(x)
+
+    return np.mean([
+        AP_kmeans(
+            features=features,
+            labels=y,
+            index=i
+        )
+        for i in range(len(features))
+    ])
+
+
+def AP_kmeans(features, labels, index):
+    query_feature = features[index]
+    query_label = labels[index]
+
+    db_features = features.delete(index)
+    db_labels = features.delete(index)
+
     total_relevents = len(utils.where_equal(db_labels, query_label))
 
-    # if db doesn't have relevants image, return 0
+    # if db doesn't have relevant images, return 0
     if total_relevents == 0:
         return 0
 
+    kmeans = KMeans(n_clusters=len(set(db_labels)))
+    kmeans.fit(db_features)
+    kmeans_labels = kmeans.labels_
+    kmeans_prediction = kmeans.predict(np.expand_dims(query_feature, axis=0))
+
     # all features in same cluster will be sorted and put to top
     # other features will also be sorted and put after
-
     same_cluster_indices = []
     diff_cluster_indices = []
-    for j in range(len(kmean_labels)):
-        if kmean_labels[j] == kmean_prediction:
+    for j in range(len(kmeans_labels)):
+        if kmeans_labels[j] == kmeans_prediction:
             same_cluster_indices.append(j)
         else:
             diff_cluster_indices.append(j)
@@ -100,22 +94,17 @@ def AP_kmeans(query_feature, query_label, kmean_prediction, db_features, db_labe
     diff_cluster_indices = np.array(diff_cluster_indices)
 
     same_cluster_features = db_features[same_cluster_indices]
-    same_cluster_distances = utils.euclidean_distance(
-        query_feature, same_cluster_features)
-
-    sorted_same_cluster_indices = np.argsort(same_cluster_distances)
-    sorted_same_cluster_labels = db_labels[same_cluster_indices[sorted_same_cluster_indices]]
+    same_cluster_distances = utils.euclidean_distance(query_feature, same_cluster_features)
+    sorted_same_cluster_indices = same_cluster_indices[np.argsort(same_cluster_distances)]
 
     diff_cluster_features = db_features[diff_cluster_indices]
-    diff_cluster_distances = utils.euclidean_distance(
-        query_feature, diff_cluster_features)
+    diff_cluster_distances = utils.euclidean_distance(query_feature, diff_cluster_features)
+    sorted_diff_cluster_indices = diff_cluster_indices[np.argsort(diff_cluster_distances)]
 
-    sorted_diff_cluster_indices = np.argsort(diff_cluster_distances)
-    sorted_diff_cluster_labels = db_labels[diff_cluster_indices[sorted_diff_cluster_indices]]
+    sorted_index = np.concatenate((sorted_same_cluster_indices, sorted_diff_cluster_indices))
 
     # concat 2 results, which the same cluster results will be put to top
-    sorted_labels = np.concatenate(
-        (sorted_same_cluster_labels, sorted_diff_cluster_labels))
+    sorted_labels = db_labels[sorted_index]
 
     tp = 0
     sum_precisions = 0
@@ -127,10 +116,25 @@ def AP_kmeans(query_feature, query_label, kmean_prediction, db_features, db_labe
     return sum_precisions / total_relevents
 
 
-
-def mean_precision_at_k():
+def mean_precision_at_k(extractor, x, y, k):
+    features = extractor.predict(x)
+    return np.mean([
+        precision_at_k_normal(features, y, i, k)
+        for i in range(len(features))
+    ])
     pass
 
 
-def precision_at_k():
-    pass
+def precision_at_k_normal(features, labels, index, k):
+    query_feature = features[index]
+    query_label = labels[index]
+
+    db_features = features.delete(index)
+    db_labels = labels.delete(index)
+
+    distances = utils.euclidean_distance(query_feature, db_features)
+    sorted_indices = np.argsort(distances)[:k]
+    sorted_labels = db_labels[sorted_indices]
+
+    n_true_labels = len(utils.where_equal(sorted_labels, query_label))
+    return n_true_labels / k

@@ -93,7 +93,9 @@ def load_pickle(file_path):
     pickle_file_path = file_path + '.pickle'
     try:
         f = open(pickle_file_path, 'rb')
-        return pickle.load(f)
+        res = pickle.load(f)
+        f.close()
+        return res
     except Exception as e:
         print('Unable to load:', e)
         raise

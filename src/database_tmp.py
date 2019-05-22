@@ -1,5 +1,6 @@
 import gc
 import os
+import shutil
 
 import cv2
 import numpy as np
@@ -10,19 +11,19 @@ from .utils import euclidean_distance, load_pickle, save_pickle, where_equal
 
 
 class Database:
-    def __init__(self, extractor, directory):
+    def __init__(self, extractor, directory, samplewise_center=True):
         self.extractor = extractor
         self.directory = directory
         self.kmeans = None
         self.image_shape = self.extractor.layers[0].input_shape[1:]
 
-        self.processor = ImageDataGenerator(rescale=1./255, samplewise_center=True)        
-        self.images_generator =  self.processor.flow_from_directory(
+        self.processor = ImageDataGenerator(rescale=1./255, samplewise_center=samplewise_center)
+        self.images_generator = self.processor.flow_from_directory(
                                     directory, 
                                     target_size=self.image_shape[:-1], 
                                     classes=['images'], 
                                     shuffle=False,
-                                    batch_size=320
+                                    batch_size=160
                                 )
 
         self.n_images = self.images_generator.n
@@ -35,8 +36,10 @@ class Database:
             print('Features database already created at:', self.directory)
             return
 
-        if not os.path.exists(features_directory):
-            os.makedirs(features_directory)
+        if os.path.exists(features_directory):
+            shutil.rmtree(features_directory)
+
+        os.makedirs(features_directory)
 
         # create features
         features = np.empty(shape=(self.n_images, self.n_features))
