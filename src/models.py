@@ -123,6 +123,7 @@ def vgg13(input_shape, num_classes):
 
     return cnn
 
+
 def vgg11(input_shape, num_classes):
     cnn = Sequential()
 
