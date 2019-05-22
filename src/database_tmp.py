@@ -88,15 +88,28 @@ class Database:
     def _query_kmeans(self, query_feature, db_features, num_results):
         query_cluster = self.kmeans.predict(query_feature)
         same_cluster_indices = where_equal(self.kmeans.labels_, query_cluster)
+        
+        same_cluster_features = db_features[same_cluster_indices]
+        same_cluster_distances = euclidean_distance(query_feature, same_cluster_features)
+        sorted_same_cluster_indices = np.argsort(same_cluster_distances)[:num_results]
+        sorted_filenames = np.array(self.images_generator.filenames)[same_cluster_indices[sorted_same_cluster_indices]]
 
-        # if num_results is less than num features in the cluster
-        if len(same_cluster_indices >= num_results):
-            same_cluster_features = db_features[same_cluster_indices]
-            same_cluster_distances = euclidean_distance(query_feature, same_cluster_features)
-            sorted_same_cluster_indices = np.argsort(same_cluster_distances)[:num_results]
-            sorted_filenames = np.array(self.images_generator.filenames)[same_cluster_indices[sorted_same_cluster_indices]]
+        # because num of features in the same cluster are greater than num_results, we don't need to query another clusters
+        if len(same_cluster_indices) >= num_results:
             return [cv2.imread(os.path.join(self.directory, filename), cv2.IMREAD_COLOR) 
                     for filename in sorted_filenames]
+
+        # query other clusters
+        diff_cluster_indices = where_equal(self.kmeans.labels_, query_cluster)
+        
+        diff_cluster_features = db_features[diff_cluster_indices]
+        diff_cluster_distances = euclidean_distance(query_feature, diff_cluster_features)
+        sorted_diff_cluster_indices = np.argsort(diff_cluster_distances)[:num_results]
+        sorted_diff_cluster_filenames = np.array(self.images_generator.filenames)[diff_cluster_indices[sorted_diff_cluster_indices]]
+
+        sorted_filenames = np.concatenate((sorted_filenames, sorted_diff_cluster_filenames))
+        return [cv2.imread(os.path.join(self.directory, filename), cv2.IMREAD_COLOR) 
+                for filename in sorted_filenames]
 
     def _query_normal(self, query_feature, db_features, num_results):
         distances = euclidean_distance(query_feature, db_features)
