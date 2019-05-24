@@ -6,13 +6,13 @@ from keras.utils import Sequence
 
 
 class TripletGenerator(Sequence):
-    def __init__(self, extractor, margin, directory, batch_size=16):
+    def __init__(self, extractor, margin, directory, batch_size=16, samplewise_center=False):
         self.extractor = extractor
         self.extractor._make_predict_function()
         self.margin = margin
 
         classes = os.listdir(directory)
-        datagen = ImageDataGenerator(rescale=1./255, samplewise_center=True)
+        datagen = ImageDataGenerator(rescale=1./255, samplewise_center=samplewise_center)
 
         input_size = extractor.layers[0].input_shape[1:-1]
 
