@@ -122,7 +122,14 @@ def mean_precision_at_k(extractor, x, y, k):
         precision_at_k_normal(features, y, i, k)
         for i in range(len(features))
     ])
-    pass
+
+
+def mean_precision_at_k_kmeans(extractor, x, y, k):
+    features = extractor.predict(x)
+    return np.mean([
+        precision_at_k_kmeans(features, y, i, k)
+        for i in range(len(features))
+    ])
 
 
 def precision_at_k_normal(features, labels, index, k):
@@ -138,6 +145,7 @@ def precision_at_k_normal(features, labels, index, k):
 
     n_true_labels = len(utils.where_equal(sorted_labels, query_label))
     return n_true_labels / k
+
 
 def precision_at_k_kmeans(features, labels, index, k):
     query_feature = features[index]
