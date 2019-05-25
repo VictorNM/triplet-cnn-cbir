@@ -138,3 +138,47 @@ def precision_at_k_normal(features, labels, index, k):
 
     n_true_labels = len(utils.where_equal(sorted_labels, query_label))
     return n_true_labels / k
+
+def precision_at_k_kmeans(features, labels, index, k):
+    query_feature = features[index]
+    query_label = labels[index]
+
+    db_features = np.delete(features, index, axis=0)
+    db_labels = np.delete(labels, index, axis=0)
+
+    kmeans = KMeans(n_clusters=len(set(db_labels)))
+    kmeans.fit(db_features)
+    kmeans_labels = kmeans.labels_
+    kmeans_prediction = kmeans.predict(np.expand_dims(query_feature, axis=0))
+
+    same_cluster_indices = []
+    diff_cluster_indices = []
+    for j in range(len(kmeans_labels)):
+        if kmeans_labels[j] == kmeans_prediction:
+            same_cluster_indices.append(j)
+        else:
+            diff_cluster_indices.append(j)
+
+    same_cluster_indices = np.array(same_cluster_indices)
+
+    same_cluster_features = db_features[same_cluster_indices]
+    same_cluster_distances = utils.euclidean_distance(query_feature, same_cluster_features)
+    sorted_same_cluster_indices = same_cluster_indices[np.argsort(same_cluster_distances)]
+
+    if k <= len(same_cluster_indices):
+        sorted_labels = db_labels[sorted_same_cluster_indices]
+        n_true_labels = len(utils.where_equal(sorted_labels, query_label))
+        return n_true_labels / k
+
+    diff_cluster_indices = np.array(diff_cluster_indices)
+    diff_cluster_features = db_features[diff_cluster_indices]
+    diff_cluster_distances = utils.euclidean_distance(query_feature, diff_cluster_features)
+    sorted_diff_cluster_indices = diff_cluster_indices[np.argsort(diff_cluster_distances)]
+
+    sorted_index = np.concatenate((sorted_same_cluster_indices, sorted_diff_cluster_indices))
+
+    # concat 2 results, which the same cluster results will be put to top
+    sorted_labels = db_labels[sorted_index]
+
+    n_true_labels = len(utils.where_equal(sorted_labels, query_label))
+    return n_true_labels / k
