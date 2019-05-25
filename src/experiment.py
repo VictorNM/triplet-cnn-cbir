@@ -175,7 +175,7 @@ def precision_at_k_kmeans(features, labels, index, k):
 
     if k <= len(same_cluster_indices):
         sorted_labels = db_labels[sorted_same_cluster_indices]
-        n_true_labels = len(utils.where_equal(sorted_labels, query_label))
+        n_true_labels = len(utils.where_equal(sorted_labels[:k], query_label))
         return n_true_labels / k
 
     diff_cluster_indices = np.array(diff_cluster_indices)
@@ -188,5 +188,5 @@ def precision_at_k_kmeans(features, labels, index, k):
     # concat 2 results, which the same cluster results will be put to top
     sorted_labels = db_labels[sorted_index]
 
-    n_true_labels = len(utils.where_equal(sorted_labels, query_label))
+    n_true_labels = len(utils.where_equal(sorted_labels[:k], query_label))
     return n_true_labels / k
