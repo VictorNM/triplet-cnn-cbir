@@ -52,7 +52,9 @@ class TripletGenerator(Sequence):
 
     def on_epoch_end(self):
         self.gen0.reset()
+        np.random.shuffle(self.gen0.index_array)
         self.gen1.reset()
+        np.random.shuffle(self.gen0.index_array)
 
     def get_triplet_index_hard(self, features, labels):
         triplets = []
