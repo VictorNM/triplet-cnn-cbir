@@ -82,6 +82,7 @@ class TripletGenerator(Sequence):
                         min_neg_d = distance
                         min_neg_idx = j
 
+            print(max_pos_d, min_neg_d)
             if max_pos_d + self.margin >= min_neg_d:
                 triplets.append([i, max_pos_idx, min_neg_idx])
 
