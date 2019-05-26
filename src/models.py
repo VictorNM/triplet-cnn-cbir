@@ -15,6 +15,9 @@ class TripletLossLayer(Layer):
     
     def triplet_loss(self, inputs):
         a, p, n = inputs
+        a = K.l2_normalize(a)
+        p = K.l2_normalize(p)
+        n = K.l2_normalize(n)
         p_dist = K.sqrt(K.sum(K.square(a-p), axis=-1))
         n_dist = K.sqrt(K.sum(K.square(a-n), axis=-1))
         return K.mean(K.maximum(p_dist - n_dist + self.margin, 0), axis=0)
