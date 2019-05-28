@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.cluster import KMeans
+from keras.preprocessing import image
 
 from .utils import euclidean_distance, load_pickle, save_pickle, where_equal
 
@@ -67,13 +68,15 @@ class Database:
         self.kmeans.fit(np.random.shuffle(features))
         print('Kmeans created')
 
+    def load_image(self, image_path):
+        return image.load_img(image_path, target_size=self.image_shape[:-1])
+
     def query(self, query_image, use_kmeans=True, num_results=5):
         if num_results == 0:
             num_results = self.n_images
 
         # do preprocess
-        resized_image = np.expand_dims(cv2.resize(query_image, self.image_shape[:-1]), axis=0).astype('float64')
-        standardized_image = self.processor.standardize(resized_image)
+        standardized_image = self.processor.standardize(image.img_to_array(query_image))
 
         # extract feature
         query_feature = self.extractor.predict(standardized_image)
