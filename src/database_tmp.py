@@ -45,7 +45,6 @@ class Database:
         features = np.empty(shape=(self.n_images, self.n_features))
         start_index = 0
         for i in range(len(self.images_generator)):
-            gc.collect()
             x_batch, _ = self.images_generator.__getitem__(i)
             features_batch = self.extractor.predict(x_batch)            
             end_index = start_index + len(features_batch)
@@ -63,8 +62,8 @@ class Database:
 
         features_file_path = os.path.join(self.directory, 'features', 'features')
         features = load_pickle(features_file_path)
-        
-        self.kmeans.fit(np.random.shuffle(features))
+
+        self.kmeans.fit(features)
         print('Kmeans created')
 
     def load_image(self, image_path):
