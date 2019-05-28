@@ -64,7 +64,7 @@ class Database:
         features_file_path = os.path.join(self.directory, 'features', 'features')
         features = load_pickle(features_file_path)
         
-        self.kmeans.fit(features)
+        self.kmeans.fit(np.random.shuffle(features))
         print('Kmeans created')
 
     def query(self, query_image, use_kmeans=True, num_results=5):

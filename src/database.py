@@ -40,12 +40,11 @@ class KmeanDatabase:
         print('Query finished in %ds' % (time.time() - start))
 
         result_images = self.images[sorted_result_index]
-        result_labels = self.labels[sorted_result_index]
 
         if num_results > 0:
-            return result_images[:num_results], result_labels[:num_results]
+            return result_images[:num_results]
 
-        return result_images, result_labels
+        return result_images
 
     def get_real_labels(self, numeric_labels):
         return [self.classes[label] for label in numeric_labels]
@@ -78,12 +77,11 @@ class NormalDatabase:
         print('Query finished in %ds' % (time.time() - start))
 
         result_images = self.images[sorted_result_index]
-        result_labels = self.labels[sorted_result_index]
 
         if num_results > 0:
-            return result_images[:num_results], result_labels[:num_results]
+            return result_images[:num_results]
 
-        return result_images, result_labels
+        return result_images
 
     def get_real_labels(self, numeric_labels):
         return [self.classes[label] for label in numeric_labels]
