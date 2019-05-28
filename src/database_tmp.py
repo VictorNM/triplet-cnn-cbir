@@ -12,13 +12,13 @@ from .utils import euclidean_distance, load_pickle, save_pickle, where_equal
 
 
 class Database:
-    def __init__(self, extractor, directory, samplewise_center=True):
+    def __init__(self, extractor, directory):
         self.extractor = extractor
         self.directory = directory
         self.kmeans = None
         self.image_shape = self.extractor.layers[0].input_shape[1:]
 
-        self.processor = ImageDataGenerator(rescale=1./255, samplewise_center=samplewise_center)
+        self.processor = ImageDataGenerator(rescale=1./255)
         self.images_generator = self.processor.flow_from_directory(
                                     directory, 
                                     target_size=self.image_shape[:-1], 
@@ -76,10 +76,10 @@ class Database:
             num_results = self.n_images
 
         # do preprocess
-        standardized_image = self.processor.standardize(np.expand_dims(image.img_to_array(query_image), axis=0))
+        standardized_image = self.processor.standardize(image.img_to_array(query_image))
 
         # extract feature
-        query_feature = self.extractor.predict(standardized_image)
+        query_feature = self.extractor.predict(np.expand_dims(standardized_image, axis=0))
 
         # query from feature database
         features_file_path = os.path.join(self.directory, 'features', 'features')
