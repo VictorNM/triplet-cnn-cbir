@@ -2,11 +2,10 @@ import gc
 import os
 import shutil
 
-import cv2
 import numpy as np
+from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.cluster import KMeans
-from keras.preprocessing import image
 
 from .utils import euclidean_distance, load_pickle, save_pickle, where_equal
 
@@ -102,7 +101,7 @@ class Database:
 
         # because num of features in the same cluster are greater than num_results, we don't need to query another clusters
         if len(same_cluster_indices) >= num_results:
-            return [cv2.imread(os.path.join(self.directory, filename), cv2.IMREAD_COLOR) 
+            return [self.load_image(os.path.join(self.directory, filename))
                     for filename in sorted_filenames]
 
         # query other clusters
@@ -114,7 +113,7 @@ class Database:
         sorted_diff_cluster_filenames = np.array(self.images_generator.filenames)[diff_cluster_indices[sorted_diff_cluster_indices]]
 
         sorted_filenames = np.concatenate((sorted_filenames, sorted_diff_cluster_filenames))
-        return [cv2.imread(os.path.join(self.directory, filename), cv2.IMREAD_COLOR) 
+        return [self.load_image(os.path.join(self.directory, filename))
                 for filename in sorted_filenames]
 
     def _query_normal(self, query_feature, db_features, num_results):
@@ -122,5 +121,5 @@ class Database:
         sorted_indices = np.argsort(distances)[:num_results]
         sorted_filenames = np.array(self.images_generator.filenames)[sorted_indices]
 
-        return [cv2.imread(os.path.join(self.directory, filename), cv2.IMREAD_COLOR) 
+        return [self.load_image(os.path.join(self.directory, filename))
                 for filename in sorted_filenames]
