@@ -76,7 +76,7 @@ class Database:
             num_results = self.n_images
 
         # do preprocess
-        standardized_image = self.processor.standardize(image.img_to_array(query_image))
+        standardized_image = self.processor.standardize(np.expand_dims(image.img_to_array(query_image), axis=0))
 
         # extract feature
         query_feature = self.extractor.predict(standardized_image)
