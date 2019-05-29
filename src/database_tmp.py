@@ -15,6 +15,7 @@ class Database:
         self.extractor = extractor
         self.directory = directory
         self.kmeans = None
+        self.features = None
         self.image_shape = self.extractor.layers[0].input_shape[1:]
 
         self.processor = ImageDataGenerator(rescale=1./255)
@@ -53,23 +54,28 @@ class Database:
             start_index += len(features_batch)
             print('Created: {} / {} features'.format(start_index, self.n_images))
 
+        self.features = features
         print('saving...')
         save_pickle(features, os.path.join(features_directory, 'features'))
         print('Created features database successfully')
 
+    def load_features_database(self, features_filename):
+        features_file_path = os.path.join(self.directory, 'features', features_filename)
+        self.features = load_pickle(features_file_path)
+
     def create_kmeans(self, num_clusters):
+        assert self.features is not None, "Load or create features first"
         self.kmeans = KMeans(num_clusters)
 
-        features_file_path = os.path.join(self.directory, 'features', 'features')
-        features = load_pickle(features_file_path)
-
-        self.kmeans.fit(features)
+        self.kmeans.fit(self.features)
         print('Kmeans created')
 
     def load_image(self, image_path):
         return image.load_img(image_path, target_size=self.image_shape[:-1])
 
     def query(self, query_image, use_kmeans=True, num_results=5):
+        assert self.features is not None, "Load or create features first"
+
         if num_results == 0:
             num_results = self.n_images
 
@@ -80,8 +86,7 @@ class Database:
         query_feature = self.extractor.predict(np.expand_dims(standardized_image, axis=0))
 
         # query from feature database
-        features_file_path = os.path.join(self.directory, 'features', 'features')
-        db_features = load_pickle(features_file_path)
+        db_features = self.features
 
         if use_kmeans:
             assert self.kmeans is not None, 'You have to call method create_kmeans first'
@@ -98,7 +103,8 @@ class Database:
         sorted_same_cluster_indices = np.argsort(same_cluster_distances)[:num_results]
         sorted_filenames = np.array(self.images_generator.filenames)[same_cluster_indices[sorted_same_cluster_indices]]
 
-        # because num of features in the same cluster are greater than num_results, we don't need to query another clusters
+        # because num of features in the same cluster are greater than num_results,
+        # we don't need to query another clusters
         if len(same_cluster_indices) >= num_results:
             return [self.load_image(os.path.join(self.directory, filename))
                     for filename in sorted_filenames]
