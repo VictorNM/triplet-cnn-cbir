@@ -13,6 +13,7 @@ from .utils import euclidean_distance, load_pickle, save_pickle, where_equal
 class Database:
     def __init__(self, extractor, directory):
         self.extractor = extractor
+        self.extractor._make_predict_function()
         self.directory = directory
         self.kmeans = None
         self.features = None
@@ -73,7 +74,7 @@ class Database:
     def load_image(self, image_path):
         return image.load_img(image_path, target_size=self.image_shape[:-1])
 
-    def query(self, query_image, use_kmeans=True, num_results=5):
+    def query(self, query_image, use_kmeans=True, num_results=5, return_path=False):
         assert self.features is not None, "Load or create features first"
 
         if num_results == 0:
@@ -90,11 +91,11 @@ class Database:
 
         if use_kmeans:
             assert self.kmeans is not None, 'You have to call method create_kmeans first'
-            return self._query_kmeans(query_feature, db_features, num_results)
+            return self._query_kmeans(query_feature, db_features, num_results, return_path=return_path)
 
-        return self._query_normal(query_feature, db_features, num_results)
+        return self._query_normal(query_feature, db_features, num_results, return_path=return_path)
 
-    def _query_kmeans(self, query_feature, db_features, num_results):
+    def _query_kmeans(self, query_feature, db_features, num_results, return_path=False):
         query_cluster = self.kmeans.predict(query_feature)
         same_cluster_indices = where_equal(self.kmeans.labels_, query_cluster)
         
@@ -106,6 +107,9 @@ class Database:
         # because num of features in the same cluster are greater than num_results,
         # we don't need to query another clusters
         if len(same_cluster_indices) >= num_results:
+            if return_path:
+                return [os.path.join(self.directory, filename) for filename in sorted_filenames]
+
             return [self.load_image(os.path.join(self.directory, filename))
                     for filename in sorted_filenames]
 
@@ -118,13 +122,20 @@ class Database:
         sorted_diff_cluster_filenames = np.array(self.images_generator.filenames)[diff_cluster_indices[sorted_diff_cluster_indices]]
 
         sorted_filenames = np.concatenate((sorted_filenames, sorted_diff_cluster_filenames))
+
+        if return_path:
+            return [os.path.join(self.directory, filename) for filename in sorted_filenames]
+
         return [self.load_image(os.path.join(self.directory, filename))
                 for filename in sorted_filenames]
 
-    def _query_normal(self, query_feature, db_features, num_results):
+    def _query_normal(self, query_feature, db_features, num_results, return_path=False):
         distances = euclidean_distance(query_feature, db_features)
         sorted_indices = np.argsort(distances)[:num_results]
         sorted_filenames = np.array(self.images_generator.filenames)[sorted_indices]
+
+        if return_path:
+            return [os.path.join(self.directory, filename) for filename in sorted_filenames]
 
         return [self.load_image(os.path.join(self.directory, filename))
                 for filename in sorted_filenames]

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBIR Demo</title>
+</head>
+<body>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+
+    <div class="query-image">
+        {% if img_path %}
+            <img height="224px" src={{img_path}} alt={{img_path}}>
+        {% endif %}
+    </div>
+    <div class="result-images">
+        {% if result_path %}
+            <h2>Results</h2>
+            {% for path in result_path %}
+                <img height="224px" src={{path}} alt={{path}}>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>
