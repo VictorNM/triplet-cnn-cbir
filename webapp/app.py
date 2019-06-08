@@ -66,13 +66,17 @@ def index():
 
     if request.method == 'POST':
         if 'file' not in request.files:
-            flash('No file part')
+            print('No file part')
             return redirect(request.url)
 
         file = request.files['file']
+        num_result = int(request.form['num-result'])
+        use_kmeans = False
+        if 'use-kmeans' in request.form:
+            use_kmeans = True
 
         if file.filename == '':
-            flash('No selected file')
+            print('No selected file')
             return redirect(request.url)
 
         img_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
@@ -81,7 +85,7 @@ def index():
 
         query_image = triplet_db.load_image(abs_img_path)
         start = time()
-        result_path = triplet_db.query(query_image, use_kmeans=False, num_results=12, return_path=True)
+        result_path = triplet_db.query(query_image, use_kmeans=use_kmeans, num_results=num_result, return_path=True)
         end = time()
         query_time = end - start
         client_result_path = []
@@ -93,3 +97,8 @@ def index():
             client_result_path.append(image_path)
 
         return render_template('index.html', img_path=img_path, result_path=client_result_path, query_time=query_time)
+
+
+if __name__ == '__main__':
+    app.secret_key = 'any random string'
+    app.run(debug=True)

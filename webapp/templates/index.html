@@ -1,59 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>CBIR Demo</title>
-    <link rel="stylesheet"
-      href="{{url_for('.static', filename='bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('.static', filename='bootstrap.min.css')}}">
 </head>
+
 <body>
     <header>
         <div class="navbar navbar-dark bg-dark box-shadow">
-            <div class="container d-flex justify-content-between">
-                <h2 class="navbar-brand d-flex align-items-center">CONTENT-BASED IMAGE RETRIEVAL</h2>
-            </div>
         </div>
     </header>
     <div class="container">
         <div class="row text-center">
-            <div id="image-preview-div col-4">
-                    <label class="label">Selected image:</label>
-                    <br>
-                    <div class="d-block mb-4 h-100">
-                        {% if img_path %}
-                            <img class="img-fluid img-thumbnail" style="height: 100px;" src={{img_path}} alt={{img_path}}>
-                        {% else %}
-                            <img class="img-fluid img-thumbnail" src="noimage" alt="noimage">
-                        {% endif %}
-                    </div>
+            <div class="col-md-2 mt-1" id="image-preview-div">
+                <label class="label"><b>Selected image:</b></label>
+                <br>
+                <div class="d-block mb-3 h-100">
+                    {% if img_path %}
+                    <img class="img-fluid img-thumbnail" style="height: 150px;" src={{img_path}} alt={{img_path}}>
+                    {% else %}
+                    <img class="img-fluid img-thumbnail" style="height: 150px;" src="../static/no-image.png" alt="no-image">
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-8">
+            <div class="col-md-10 mt-5">
                 <form id="upload-image-form" action="" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <input type="file" name="file" id="file" required>
+                    <div class="row">
+                        <div class="custom-file col-9">
+                            <input type="file" name="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                        <div class="form-group col-3">
+                            <input class="form-control" type="number" name="num-result" placeholder="Number of results">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="use-kmeans">Use kmeans:</label>
-                        <input type="checkbox" id="use-kmeans">
+                    <div class="row">
+                        <div class="form-check col-12">
+                            <input class="form-check-input" type="checkbox" id="use-kmeans" name="use-kmeans">
+                            <label class="form-check-label" for="use-kmeans">Use kmeans</label>
+                        </div>
                     </div>
-                    <button class="btn btn-lg btn-primary" id="upload-button" type="submit">Upload image</button>
+                    <button class="btn btn-lg btn-primary mt-2" id="upload-button" type="submit" value="Upload">Query</button>
                 </form>
             </div>
         </div>
         {% if result_path %}
-            <hr class="mt-2 mb-5">
-            <h2>Results</h2>
-            <p>Query time: {{query_time}}</p>
-            <div class="row text-center text-lg-left">
+        <hr>
+        <h2>Results</h2>
+        <p>Query time: {{query_time}}</p>
+        <div class="row text-center text-lg-left">
             {% for path in result_path %}
-                <div class="col-lg-3 col-md-4 col-6">
-                    <div class="d-block mb-4 h-100">
-                        <img class="img-fluid img-thumbnail" style="height: 224px" src={{path}} alt={{path}}>
-                    </div>
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="d-block mb-4 h-100">
+                    <img class="img-fluid img-thumbnail" style="height: 224px" src={{path}} alt={{path}}>
                 </div>
-            {% endfor %}
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
     </div>
 </body>
+
 </html>
